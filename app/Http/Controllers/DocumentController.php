@@ -19,14 +19,14 @@ class DocumentController extends Controller
             })
             ->get();
 
-        return view('documents.index', compact('documents'));
+        return view('document.index', compact('documents'));
     }
 
     public function create()
     {
         $categories = Category::all();
 
-        return view('documents.create', compact('categories'));
+        return view('document.create', compact('categories'));
     }
 
     public function store(Request $request)
