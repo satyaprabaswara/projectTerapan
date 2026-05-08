@@ -273,10 +273,6 @@
 
             </div>
 
-            <button type="button" class="btn-google">
-                Masuk dengan Google
-            </button>
-
             <button type="submit" class="btn-login">
                 Login
             </button>
