@@ -7,11 +7,12 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
+<style>
+        /* gunakan styling dari bootstrap/tailwind yang sudah ada */
         body{
-            background:#f4f6fb;
             font-family:'Segoe UI',sans-serif;
         }
+
 
         .page-title{
             font-size:36px;
@@ -187,11 +188,82 @@
             border-color:#2563eb;
             box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
         }
+
+        /* Sidebar */
+        .w-64{ width: 16rem; }
+
+        .hover-bg:hover{
+            background:#f1f5f9;
+        }
+
+        @media (max-width: 992px){
+            .w-64{ width: 13rem; }
+        }
+
+        @media (max-width: 768px){
+            .w-64{ width: 100%; }
+            main{ padding: 1rem !important; }
+            .d-flex.min-vh-100{ flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container py-5">
+<x-app-layout>
+
+    <div class="flex min-h-screen bg-gray-100">
+
+        <!-- Sidebar (tanpa kotak, kebawah seperti dashboard) -->
+        <aside class="w-64 bg-white shadow-lg">
+            <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold text-blue-700">
+                    PT SPR Langgak
+                </h1>
+                <p class="text-sm text-gray-500">
+                    Sistem Dokumentasi Finance
+                </p>
+            </div>
+
+            <nav class="mt-6 flex flex-col">
+
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center px-6 py-3 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    📊 Dashboard
+                </a>
+
+                <a href="{{ route('document.index') }}"
+                    class="flex items-center px-6 py-3 {{ request()->routeIs('document.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    📁 Kelola Dokumen
+                </a>
+
+                <a href="#"
+                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    📂 Kategori
+                </a>
+
+                <a href="#"
+                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    👤 Pengguna
+                </a>
+
+                <a href="#"
+                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    📝 Log Aktivitas
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}" class="">
+                    @csrf
+
+                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
+                        🚪 Logout
+                    </button>
+                </form>
+
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
@@ -474,5 +546,7 @@ document
 });
 </script>
 
-</body>
-</html>
+</main>
+</div>
+</x-app-layout>
+

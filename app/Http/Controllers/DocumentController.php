@@ -13,13 +13,16 @@ class DocumentController extends Controller
     {
         $search = $request->search;
 
-        $documents = Document::with('category')
-            ->when($search, function ($query) use ($search) {
-                $query->where('nama_dokumen', 'like', "%{$search}%");
-            })
-            ->get();
+        $documents = Document::when($search, function ($query) use ($search) {
+            $query->where('nama_dokumen', 'like', '%' . $search . '%');
+        })->latest()->get();
 
-        return view('document.index', compact('documents'));
+        $categories = Category::all();
+
+        return view('document.index', compact(
+            'documents',
+            'categories'
+        ));
     }
 
     public function create()
