@@ -2,8 +2,8 @@
     <div class="flex min-h-screen bg-gray-100">
 
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-lg">
-            <div class="p-6 border-b">
+        <aside class="w-64 min-h-screen bg-white shadow-md">
+            <div class="p-6">
                 <h1 class="text-2xl font-bold text-blue-700">
                     PT SPR Langgak
                 </h1>
@@ -13,27 +13,28 @@
             </div>
 
             <nav class="mt-6">
-                <a href="#" class="flex items-center px-6 py-3 bg-blue-500 text-white">
+                <a href="{{ route('dashboard') }}"
+                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
                     📊 Dashboard
                 </a>
 
                 <a href="/document"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     📁 Kelola Dokumen
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     📂 Kategori
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     👤 Pengguna
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     📝 Log Aktivitas
                 </a>
 
@@ -67,48 +68,53 @@
                 </div>
             </div>
 
-            <!-- Cards -->
-            <div class="grid grid-cols-4 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
 
-            <div class="bg-blue-500 text-white p-5 rounded-xl shadow">
-                <h3 class="text-lg">Total Dokumen</h3>
-                <p class="text-4xl font-bold mt-2">
+            <div class="bg-blue-500 text-white p-4 rounded-2xl shadow-sm">
+                <h3 class="text-sm opacity-90">
+                    Total Dokumen
+                </h3>
+                <p class="text-3xl font-bold mt-2">
                     {{ $totalDocuments }}
                 </p>
             </div>
 
-            <div class="bg-green-500 text-white p-5 rounded-xl shadow">
-                <h3 class="text-lg">Total Kategori</h3>
-                <p class="text-4xl font-bold mt-2">
+            <div class="bg-green-500 text-white p-4 rounded-2xl shadow-sm">
+                <h3 class="text-sm opacity-90">
+                    Total Kategori
+                </h3>
+                <p class="text-3xl font-bold mt-2">
                     {{ $totalCategories }}
                 </p>
             </div>
 
-            <div class="bg-yellow-400 text-white p-5 rounded-xl shadow">
-                <h3 class="text-lg">Dokumen Hari Ini</h3>
-                <p class="text-4xl font-bold mt-2">
+            <div class="bg-yellow-400 text-white p-4 rounded-2xl shadow-sm">
+                <h3 class="text-sm opacity-90">
+                    Dokumen Hari Ini
+                </h3>
+                <p class="text-3xl font-bold mt-2">
                     {{ $todayDocuments }}
                 </p>
             </div>
 
-            <div class="bg-red-400 text-white p-5 rounded-xl shadow">
-                <h3 class="text-lg">Total Pengguna</h3>
-                <p class="text-4xl font-bold mt-2">
+            <div class="bg-red-400 text-white p-4 rounded-2xl shadow-sm">
+                <h3 class="text-sm opacity-90">
+                    Total Pengguna
+                </h3>
+                <p class="text-3xl font-bold mt-2">
                     {{ $totalUsers }}
                 </p>
             </div>
-
         </div>
 
             <!-- Table -->
-            <div class="bg-white rounded-xl shadow p-6">
+            <div class="bg-white rounded-2xl shadow-sm p-6">
                 <h3 class="text-2xl font-bold mb-4">
                     Daftar Dokumen
                 </h3>
-
                 <table class="w-full border-collapse">
                     <thead>
-                        <tr class="bg-gray-100">
+                        <tr class="bg-gray-50 text-gray-700">
                             <th class="p-3 text-left">No</th>
                             <th class="p-3 text-left">Nama Dokumen</th>
                             <th class="p-3 text-left">Kategori</th>

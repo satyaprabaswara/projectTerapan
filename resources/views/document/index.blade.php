@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Dokumen</title>
@@ -189,6 +186,15 @@
             box-shadow:0 0 0 .2rem rgba(37,99,235,.15);
         }
 
+        .btn-close{
+            opacity:.7;
+        }
+
+        .btn-close:hover{
+            opacity:1;
+            transform:scale(1.05);
+        }
+
         /* Sidebar */
         .w-64{ width: 16rem; }
 
@@ -206,15 +212,13 @@
             .d-flex.min-vh-100{ flex-direction: column; }
         }
     </style>
-</head>
-<body>
 
 <x-app-layout>
 
     <div class="flex min-h-screen bg-gray-100">
 
         <!-- Sidebar (tanpa kotak, kebawah seperti dashboard) -->
-        <aside class="w-64 bg-white shadow-lg">
+        <aside class="w-64 min-h-screen bg-white shadow-lg">
             <div class="p-6 border-b">
                 <h1 class="text-2xl font-bold text-blue-700">
                     PT SPR Langgak
@@ -227,27 +231,27 @@
             <nav class="mt-6 flex flex-col">
 
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
                     📊 Dashboard
                 </a>
 
                 <a href="{{ route('document.index') }}"
-                    class="flex items-center px-6 py-3 {{ request()->routeIs('document.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('document.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
                     📁 Kelola Dokumen
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     📂 Kategori
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     👤 Pengguna
                 </a>
 
                 <a href="#"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200">
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     📝 Log Aktivitas
                 </a>
 
@@ -414,10 +418,13 @@
 
 <!-- MODAL -->
 <div class="modal fade" id="uploadModal" tabindex="-1">
-
     <div class="modal-dialog modal-lg modal-dialog-centered">
-
-        <div class="modal-content">
+        <div class="modal-content position-relative">
+            <button
+                type="button"
+                class="btn-close position-absolute top-0 end-0 m-4"
+                data-bs-dismiss="modal">
+            </button>
 
             <h1 class="fw-bold mb-2">
                 Upload Dokumen
@@ -428,7 +435,7 @@
             </p>
 
             <form
-                action="/dokumen"
+                action="{{ route('document.store') }}"
                 method="POST"
                 enctype="multipart/form-data">
 
@@ -520,13 +527,9 @@
 
                     Upload Dokumen
                 </button>
-
             </form>
-
         </div>
-
     </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
