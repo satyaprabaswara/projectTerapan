@@ -349,7 +349,7 @@
 
                         <td class="text-center">
                             <span class="badge-category">
-                                {{ $d->category_id ?? '-' }}
+                                {{ $d->category->nama_kategori ?? '-' }}
                             </span>
                         </td>
 

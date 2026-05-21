@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('document', DocumentController::class);
 
+Route::get(
+    '/document/download/{document}',
+    [DocumentController::class, 'download']
+)->name('document.download');
+
 Route::resource('users', \App\Http\Controllers\UserController::class);
 
 Route::get('/debug/user-role', [\App\Http\Controllers\UserRoleDebugController::class, 'show'])
