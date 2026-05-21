@@ -9,29 +9,36 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
+    // halaman daftar dokumen
     public function index(Request $request)
     {
-        $search = $request->search;
+        $query = Document::with('category');
 
-        $documents = Document::when($search, function ($query) use ($search) {
-            $query->where('nama_dokumen', 'like', '%' . $search . '%');
-        })->latest()->get();
+        // search
+        if ($request->search) {
+            $query->where(
+                'nama_dokumen',
+                'like',
+                '%' . $request->search . '%'
+            );
+        }
+
+        $documents = $query
+            ->latest()
+            ->get();
 
         $categories = Category::all();
 
-        return view('document.index', compact(
-            'documents',
-            'categories'
-        ));
+        return view(
+            'document.index',
+            compact(
+                'documents',
+                'categories'
+            )
+        );
     }
 
-    public function create()
-    {
-        $categories = Category::all();
-
-        return view('document.create', compact('categories'));
-    }
-
+    // upload dokumen
     public function store(Request $request)
     {
         $request->validate([
@@ -41,33 +48,51 @@ class DocumentController extends Controller
             'file' => 'required|mimes:pdf,jpg,jpeg,png|max:2048'
         ]);
 
+        // upload file
         $file = $request->file('file');
-        $filename = time() . '_' . $file->getClientOriginalName();
 
-        $file->storeAs('documents', $filename, 'public');
+        $filename =
+            time() . '_' .
+            $file->getClientOriginalName();
 
+        $file->storeAs(
+            'documents',
+            $filename,
+            'public'
+        );
+
+        // simpan ke database
         Document::create([
             'nama_dokumen' => $request->nama_dokumen,
-            'deskripsi' => $request->deskripsi,
             'tanggal_upload' => $request->tanggal_upload,
             'category_id' => $request->category_id,
-            'file' => $filename
+            'file' => 'documents/' . $filename
         ]);
 
-        return redirect()->route('documents.index');
+        return redirect()
+            ->route('document.index')
+            ->with(
+                'success',
+                'Dokumen berhasil diupload'
+            );
     }
 
+    // hapus dokumen
     public function destroy(Document $document)
     {
-        Storage::delete('public/documents/' . $document->file);
+        Storage::disk('public')
+            ->delete($document->file);
 
         $document->delete();
 
-        return redirect()->route('documents.index');
+        return redirect()
+            ->route('document.index');
     }
 
+    // download dokumen
     public function download(Document $document)
     {
-        return Storage::download('public/documents/' . $document->file);
+        return Storage::disk('public')
+            ->download($document->file);
     }
 }

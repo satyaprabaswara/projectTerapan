@@ -228,7 +228,6 @@
                 </p>
             </div>
 
-
             <nav class="mt-6 flex flex-col">
 
                 <a href="{{ route('dashboard') }}"
@@ -246,11 +245,10 @@
                     📂 Kategori
                 </a>
 
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('users.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                <a href="#"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     👤 Pengguna
                 </a>
-
 
                 <a href="#"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
@@ -351,7 +349,7 @@
 
                         <td class="text-center">
                             <span class="badge-category">
-                                {{ $d->kategori ?? '-' }}
+                                {{ $d->category_id ?? '-' }}
                             </span>
                         </td>
 
@@ -459,6 +457,21 @@
 
                 </div>
 
+                <!-- Tanggal Upload -->
+                <div class="mb-4">
+
+                    <label class="fw-semibold mb-2">
+                        Tanggal Upload
+                    </label>
+
+                    <input
+                        type="date"
+                        name="tanggal_upload"
+                        class="form-control form-control-lg rounded-4"
+                        required>
+
+                </div>
+
                 <!-- Kategori -->
                 <div class="mb-4">
 
@@ -467,7 +480,7 @@
                     </label>
 
                     <select
-                        name="kategori"
+                        name="category_id"
                         class="form-select form-select-lg rounded-4"
                         required>
 
@@ -475,13 +488,13 @@
                             -- Pilih Kategori --
                         </option>
 
-                        <option value="Invoice">
-                            Invoice
-                        </option>
-
-                        <option value="Surat Kontrak">
-                            Surat Kontrak
-                        </option>
+                        @isset($categories)
+                            @foreach($categories as $c)
+                                <option value="{{ $c->id }}">
+                                    {{ $c->nama_kategori ?? $c->name ?? $c->title ?? $c->id }}
+                                </option>
+                            @endforeach
+                        @endisset
 
                     </select>
 
