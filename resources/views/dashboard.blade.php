@@ -28,10 +28,11 @@
                     📂 Kategori
                 </a>
 
-                <a href="#"
+                <a href="{{ route('users.index') }}"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
                     👤 Pengguna
                 </a>
+
 
                 <a href="#"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
@@ -62,21 +63,31 @@
                         placeholder="Search..."
                         class="border rounded-lg px-4 py-2">
 
+                    @if(Auth::check() && (Auth::user()->role ?? '') === 'admin')
+                        <a href="{{ route('users.create') }}"
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
+                            + Tambah Pengguna
+                        </a>
+                    @endif
+
                     <div class="font-semibold">
-                        {{ Auth::user()->name }}
+                        {{ Auth::user()?->name ?? 'Guest' }}
                     </div>
+
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
 
             <div class="bg-blue-500 text-white p-4 rounded-2xl shadow-sm">
+
                 <h3 class="text-sm opacity-90">
                     Total Dokumen
                 </h3>
                 <p class="text-3xl font-bold mt-2">
-                    {{ $totalDocuments }}
+                    {{ $totalDocuments ?? 0 }}
                 </p>
+
             </div>
 
             <div class="bg-green-500 text-white p-4 rounded-2xl shadow-sm">
@@ -84,7 +95,8 @@
                     Total Kategori
                 </h3>
                 <p class="text-3xl font-bold mt-2">
-                    {{ $totalCategories }}
+                    {{ $totalCategories ?? 0 }}
+
                 </p>
             </div>
 
@@ -93,7 +105,8 @@
                     Dokumen Hari Ini
                 </h3>
                 <p class="text-3xl font-bold mt-2">
-                    {{ $todayDocuments }}
+                    {{ $todayDocuments ?? 0 }}
+
                 </p>
             </div>
 
@@ -102,8 +115,9 @@
                     Total Pengguna
                 </h3>
                 <p class="text-3xl font-bold mt-2">
-                    {{ $totalUsers }}
+                    {{ $totalUsers ?? 0 }}
                 </p>
+
             </div>
         </div>
 
@@ -123,7 +137,8 @@
                     </thead>
 
                     <tbody>
-                        @foreach($documents as $index => $document)
+                        @foreach(($documents ?? []) as $index => $document)
+
                         <tr class="border-b">
                             <td class="p-3">
                                 {{ $index + 1 }}

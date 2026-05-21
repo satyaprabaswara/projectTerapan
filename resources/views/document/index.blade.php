@@ -228,6 +228,7 @@
                 </p>
             </div>
 
+
             <nav class="mt-6 flex flex-col">
 
                 <a href="{{ route('dashboard') }}"
@@ -245,10 +246,11 @@
                     📂 Kategori
                 </a>
 
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
+                <a href="{{ route('users.index') }}"
+                    class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('users.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     👤 Pengguna
                 </a>
+
 
                 <a href="#"
                     class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
