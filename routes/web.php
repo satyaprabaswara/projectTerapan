@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,11 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('document', DocumentController::class);
 
+Route::resource(
+    'categories',
+    CategoryController::class
+);
+
 Route::get(
     '/document/download/{document}',
     [DocumentController::class, 'download']
@@ -37,5 +43,3 @@ Route::get('/debug/user-role', [\App\Http\Controllers\UserRoleDebugController::c
     ->name('debug.user-role');
 
 require __DIR__.'/auth.php';
-
-

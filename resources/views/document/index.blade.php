@@ -1,4 +1,4 @@
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Dokumen</title>
 
@@ -230,37 +230,65 @@
 
             <nav class="mt-6 flex flex-col">
 
+                <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    class="flex items-center px-6 py-3 no-underline
+                    {{ request()->routeIs('dashboard')
+                        ? 'bg-blue-500 text-white'
+                        : 'text-gray-700 hover:bg-gray-200' }}">
+
                     📊 Dashboard
                 </a>
 
+                <!-- Kelola Dokumen -->
                 <a href="{{ route('document.index') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('document.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                    class="flex items-center px-6 py-3 no-underline
+                    {{ request()->routeIs('document.*')
+                        ? 'bg-blue-500 text-white'
+                        : 'text-gray-700 hover:bg-gray-200' }}">
+
                     📁 Kelola Dokumen
                 </a>
 
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
+                <!-- Kategori -->
+                <a href="{{ route('categories.index') }}"
+                    class="flex items-center px-6 py-3 no-underline
+                    {{ request()->routeIs('categories.*')
+                        ? 'bg-blue-500 text-white'
+                        : 'text-gray-700 hover:bg-gray-200' }}">
+
                     📂 Kategori
                 </a>
 
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
+                <!-- Pengguna -->
+                <a href="{{ route('users.index') }}"
+                    class="flex items-center px-6 py-3 no-underline
+                    {{ request()->routeIs('users.*')
+                        ? 'bg-blue-500 text-white'
+                        : 'text-gray-700 hover:bg-gray-200' }}">
+
                     👤 Pengguna
                 </a>
 
+                <!-- Log Aktivitas -->
                 <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
+                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200 no-underline">
+
                     📝 Log Aktivitas
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}" class="">
+                <!-- Logout -->
+                <form method="POST"
+                    action="{{ route('logout') }}">
+
                     @csrf
 
-                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
+                    <button
+                        class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
+
                         🚪 Logout
                     </button>
+
                 </form>
 
             </nav>
@@ -567,4 +595,3 @@ document
 </main>
 </div>
 </x-app-layout>
-
