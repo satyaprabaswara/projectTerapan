@@ -43,10 +43,11 @@
                     📁 Kelola Dokumen
                 </a>
 
-                <a href="#"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
+                <a href="{{ route('categories.index') }}"
+                   class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('categories.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     📂 Kategori
                 </a>
+
 
                 <a href="{{ route('users.index') }}"
                    class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('users.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
