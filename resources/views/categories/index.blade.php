@@ -1,20 +1,16 @@
 <x-app-layout>
 
-<div class="d-flex min-vh-100 bg-light">
+{{-- gunakan layout/warna yang konsisten dengan halaman lain --}}
+<div class="flex min-h-screen bg-gray-100">
 
     <!-- SIDEBAR -->
     <aside class="bg-white shadow-sm"
         style="width:260px; min-height:100vh;">
 
-        <div class="p-4 border-bottom">
-            <h2 class="fw-bold text-primary mb-1">
-                PT SPR Langgak
-            </h2>
-
-            <small class="text-muted">
-                Sistem Dokumentasi Finance
-            </small>
-        </div>
+        <div class="p-6 border-b">
+                <h1 class="text-2xl font-bold text-blue-700">PT SPR Langgak</h1>
+                <p class="text-sm text-gray-500">Sistem Dokumentasi Finance</p>
+            </div>
 
         <nav class="d-flex flex-column mt-3">
 
@@ -94,27 +90,20 @@
 
         </div>
 
-        <!-- SEARCH -->
+        <!-- SEARCH (samakan seperti halaman dokumen) -->
         <form
             method="GET"
             action="{{ route('categories.index') }}"
             class="mb-4">
 
-            <div class="input-group shadow-sm">
-
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control border-0 py-3"
-                    placeholder="Cari kategori...">
-
-                <button
-                    class="btn btn-primary px-4">
-
-                    Cari
-                </button>
-
-            </div>
+            <div class="card-body p-4">
+                    <form method="GET" action="{{ route('users.index') }}" class="mb-0">
+                        <div class="input-group search-box">
+                            <input type="text" name="search" class="form-control" placeholder="🔍 Cari kategori..." value="{{ request('search') }}">
+                            <button class="btn btn-primary px-4" type="submit">Cari</button>
+                        </div>
+                    </form>
+                </div>
 
         </form>
 

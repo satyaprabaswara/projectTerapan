@@ -15,6 +15,19 @@
     .btn-delete{ background:#ef4444; color:white; border:none; border-radius:10px; padding:8px 14px; }
     .empty-state{ padding:40px; text-align:center; color:#94a3b8; }
 
+    /* samakan search bar seperti halaman dokumen */
+    .search-box{
+        border-radius:16px;
+        overflow:hidden;
+        background:white;
+        box-shadow:0 4px 12px rgba(0,0,0,.05);
+    }
+
+    .search-box input{
+        border:none;
+        padding:15px;
+    }
+
     .w-64{ width: 16rem; }
 
     /* header table */
@@ -82,7 +95,6 @@
                 @endif
             </div>
 
-            <div class="card main-card mb-4">
                 <div class="card-body p-4">
                     <form method="GET" action="{{ route('users.index') }}" class="mb-0">
                         <div class="input-group search-box">
@@ -91,7 +103,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+
 
             <div class="card main-card">
                 <div class="card-body p-4">

@@ -63,12 +63,7 @@
                         placeholder="Search..."
                         class="border rounded-lg px-4 py-2">
 
-                    @if(Auth::check() && (Auth::user()->role ?? '') === 'admin')
-                        <a href="{{ route('users.create') }}"
-                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold">
-                            + Tambah Pengguna
-                        </a>
-                    @endif
+
 
                     <div class="font-semibold">
                         {{ Auth::user()?->name ?? 'Guest' }}
