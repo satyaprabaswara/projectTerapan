@@ -1,8 +1,10 @@
-# TODO - Perbaikan Halaman Pengguna
+# TODO
 
-- [x] Perbaiki role tidak tersimpan: tambahkan `role` ke `fillable` pada `app/Models/User.php`.
-- [ ] Samakan tampilan halaman `users.index` agar lebih mirip gaya `document.index` (card, header, tabel, tombol) menggunakan Tailwind/komponen yang sudah ada.
-- [x] Perbarui TODO.md untuk tracking pekerjaan ini.
+## Perbaiki halaman log aktivitas
+- [x] Analisis file `resources/views/activity_logs/index.blade.php`
+- [x] Ubah tampilan log aktivitas menjadi lebih rapi (card/tabel), badge action, format waktu & description
 
-- [ ] (Opsional) Samakan juga `users.create` dan `users.edit` dengan style konsisten.
-- [ ] Jalankan pengecekan manual: buka /users dan pastikan layout/tombol sesuai.
+- [ ] Pastikan empty state dan pagination tetap berfungsi
+- [ ] Jalankan/cek halaman `/activity-logs` untuk verifikasi
+
+

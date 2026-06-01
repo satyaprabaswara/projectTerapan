@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Category;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,8 +12,9 @@ class DocumentController extends Controller
 {
     // halaman daftar dokumen
     public function index(Request $request)
+
     {
-        $query = Document::with('category');
+        $query = Document::with(['category', 'user']);
 
         // search
         if ($request->search) {
@@ -62,11 +64,28 @@ class DocumentController extends Controller
         );
 
         // simpan ke database
-        Document::create([
+        $document = Document::create([
             'nama_dokumen' => $request->nama_dokumen,
+            'deskripsi' => $request->deskripsi,
             'tanggal_upload' => $request->tanggal_upload,
             'category_id' => $request->category_id,
-            'file' => 'documents/' . $filename
+            'user_id' => $request->user()->id,
+            'file' => 'documents/' . $filename,
+            'file_size' => $file->getSize(), // bytes
+        ]);
+
+        // log aktivitas
+        ActivityLog::create([
+            'user_id' => $request->user()->id,
+            'action' => 'document.created',
+            'description' => sprintf(
+                'Jam %s user %s mengupload dokumen "%s"',
+                now()->format('H:i'),
+                $request->user()->name ?? $request->user()->email ?? $request->user()->id,
+                $document->nama_dokumen
+            ),
+            'subject_type' => Document::class,
+            'subject_id' => $document->id,
         ]);
 
         return redirect()
@@ -83,11 +102,26 @@ class DocumentController extends Controller
         Storage::disk('public')
             ->delete($document->file);
 
+        $documentName = $document->nama_dokumen;
         $document->delete();
+
+        ActivityLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'document.deleted',
+            'description' => sprintf(
+                'Jam %s user %s menghapus dokumen "%s"',
+                now()->format('H:i'),
+                auth()->user()->name ?? auth()->user()->email ?? auth()->id(),
+                $documentName
+            ),
+            'subject_type' => Document::class,
+            'subject_id' => $document->id,
+        ]);
 
         return redirect()
             ->route('document.index');
     }
+
 
     // download dokumen
     public function download(Document $document)

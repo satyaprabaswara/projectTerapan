@@ -26,6 +26,11 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('document', DocumentController::class);
 
+Route::get('/activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])
+    ->middleware('auth')
+    ->name('activity.logs');
+
+
 Route::resource(
     'categories',
     CategoryController::class

@@ -1,9 +1,3 @@
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Dokumen</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
         /* gunakan styling dari bootstrap/tailwind yang sudah ada */
         body{
@@ -271,11 +265,12 @@
                 </a>
 
                 <!-- Log Aktivitas -->
-                <a href="#"
+                <a href="{{ route('activity.logs') }}"
                     class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200 no-underline">
 
                     📝 Log Aktivitas
                 </a>
+
 
                 <!-- Logout -->
                 <form method="POST"
@@ -356,12 +351,18 @@
                             <th>No</th>
                             <th>Nama Dokumen</th>
                             <th>Kategori</th>
-                            <th>File</th>
+                            <th>Pemilik</th>
+                            <th>Tanggal Diubah</th>
+                            <th>Ukuran File</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody>
+
+                    @if(!isset($documents))
+                        {{-- debug --}}
+                    @endif
 
                     @forelse($documents as $index => $d)
 
@@ -377,47 +378,66 @@
 
                         <td class="text-center">
                             <span class="badge-category">
-                                {{ $d->category->nama_kategori ?? '-' }}
+{{ optional($d->category)->nama_kategori ?? '-' }}
                             </span>
                         </td>
 
-                        <td class="text-center">
-                            <a
-                                href="{{ asset('storage/'.$d->file) }}"
-                                target="_blank"
-                                class="btn btn-view">
-                                👁 Lihat
-                            </a>
+                        <td>
+{{ optional($d->user)->name ?? '-' }}
                         </td>
 
-                        <td>
-                            <div class="d-flex gap-2 justify-content-center">
+                        <td class="text-center">
+                            {{ optional($d->updated_at)->format('d M Y') }}
+                        </td>
+
+                        <td class="text-center">
+                            @php
+                                $bytes = $d->file_size;
+                                if ($bytes === null) {
+                                    $display = '-';
+                                } else {
+                                    $kb = $bytes / 1024;
+                                    $mb = $kb / 1024;
+
+                                    // Tampilkan KB saja kalau < 1 MB, tampilkan MB saja kalau >= 1 MB
+                                    if ($mb < 1) {
+                                        $display = round($kb, 2) . ' KB';
+                                    } else {
+                                        $display = round($mb, 2) . ' MB';
+                                    }
+                                }
+                            @endphp
+                            {{ $display }}
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex flex-column gap-2 align-items-center">
+                                <a
+                                    class="btn btn-info btn-sm"
+                                    href="{{ asset('storage/'.$d->file) }}"
+                                    target="_blank">
+                                    👁 Lihat
+                                </a>
 
                                 <a
-                                    href="{{ route('document.download',$d->id) }}"
-                                    class="btn btn-download">
-
+                                    class="btn btn-success btn-sm"
+                                    href="{{ route('document.download',$d->id) }}">
                                     ⬇ Download
                                 </a>
 
                                 <form
                                     action="{{ route('document.destroy',$d->id) }}"
                                     method="POST">
-
                                     @csrf
                                     @method('DELETE')
-
                                     <button
+                                        type="submit"
                                         onclick="return confirm('Yakin hapus dokumen?')"
-                                        class="btn btn-delete">
-
+                                        class="btn btn-danger btn-sm">
                                         🗑 Hapus
                                     </button>
-
                                 </form>
-
                             </div>
-
                         </td>
 
                     </tr>
@@ -425,7 +445,7 @@
                     @empty
 
                     <tr>
-                        <td colspan="5" class="empty-state">
+                        <td colspan="7" class="empty-state">
                             Tidak ada data dokumen
                         </td>
                     </tr>
@@ -578,20 +598,37 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-document
-.getElementById('fileInput')
-.addEventListener('change', function () {
+console.log('bootstrap bundle loaded?', typeof bootstrap, typeof bootstrap.Dropdown);
+document.addEventListener('DOMContentLoaded', () => {
 
-    const fileName =
-        this.files.length
-        ? this.files[0].name
-        : 'Belum ada file dipilih';
+    // Prevent Bootstrap modal from stealing focus in a way that blocks dropdown interaction
+    const uploadModalEl = document.getElementById('uploadModal');
+    if (uploadModalEl) {
+        uploadModalEl.addEventListener('shown.bs.modal', () => {
+            // fokus dipindahkan ke tombol close/modal agar tidak meninggalkan focus di elemen tersembunyi
+            const closeBtn = uploadModalEl.querySelector('[data-bs-dismiss="modal"]');
+            if (closeBtn) closeBtn.focus();
+        });
+    }
 
-    document.getElementById('file-name')
-        .innerText = fileName;
+    const input = document.getElementById('fileInput');
+    const fileNameEl = document.getElementById('file-name');
+
+
+    if (!input || !fileNameEl) return;
+
+    input.addEventListener('change', function () {
+        const fileName = this.files && this.files.length
+            ? this.files[0].name
+            : 'Belum ada file dipilih';
+
+        fileNameEl.innerText = fileName;
+    });
 });
 </script>
 
 </main>
 </div>
 </x-app-layout>
+
+
