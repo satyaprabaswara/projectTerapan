@@ -389,6 +389,8 @@
 <div class="modal fade" id="uploadModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content position-relative">
+
+            <!-- Close Button -->
             <button
                 type="button"
                 class="btn-close position-absolute top-0 end-0 m-4"
@@ -403,73 +405,81 @@
                 Upload dan simpan dokumen perusahaan
             </p>
 
-            
-    method="GET"
-    action="{{ route('document.index') }}"
-    class="mb-4">
+            <!-- FORM -->
+            <form
+                action="{{ route('document.store') }}"
+                method="POST"
+                enctype="multipart/form-data">
 
-        <div class="row g-3">
+                @csrf
 
-            <!-- Kategori -->
-            <div class="col-md-3">
+                <!-- Nama Dokumen -->
+                <div class="mb-4">
 
-                <select
-                    name="category_id"
-                    class="form-select">
+                    <label class="fw-semibold mb-2">
+                        Nama Dokumen
+                    </label>
 
-                    <option value="">
-                        Semua Kategori
-                    </option>
+                    <input
+                        type="text"
+                        name="nama_dokumen"
+                        class="form-control form-control-lg rounded-4"
+                        placeholder="Masukkan nama dokumen..."
+                        required>
 
-                    @foreach($categories as $category)
+                </div>
 
-                        <option
-                            value="{{ $category->id }}"
-                            {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                <!-- Tanggal Upload -->
+                <div class="mb-4">
 
-                            {{ $category->nama_kategori }}
+                    <label class="fw-semibold mb-2">
+                        Tanggal Upload
+                    </label>
 
+                    <input
+                        type="date"
+                        name="tanggal_upload"
+                        class="form-control form-control-lg rounded-4"
+                        required>
+
+                </div>
+
+                <!-- Kategori -->
+                <div class="mb-4">
+
+                    <label class="fw-semibold mb-2">
+                        Kategori Dokumen
+                    </label>
+
+                    <select
+                        name="category_id"
+                        class="form-select form-select-lg rounded-4"
+                        required>
+
+                        <option value="">
+                            -- Pilih Kategori --
                         </option>
 
-                    @endforeach
+                        @foreach($categories as $category)
 
-                </select>
+                            <option value="{{ $category->id }}">
 
-            </div>
+                                {{ $category->nama_kategori }}
 
-            <!-- Search -->
-            <div class="col-md-7">
+                            </option>
 
-                <input
-                    type="text"
-                    name="search"
-                    class="form-control"
-                    placeholder="Cari dokumen..."
-                    value="{{ request('search') }}">
+                        @endforeach
 
-            </div>
+                    </select>
 
-            <!-- Button -->
-            <div class="col-md-2">
+                </div>
 
-                <button
-                    type="submit"
-                    class="btn btn-primary w-100">
+                <!-- Upload Area -->
+                <div class="upload-area mt-4">
 
-                    Cari
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-</form>
-         <!-- Upload -->
-                <div class="upload-area">
-
-                    <h4>📁 Pilih File Dokumen</h4>
+                    <h4>
+                        📁 Pilih File Dokumen
+                    </h4>
 
                     <p>
                         Upload PDF, DOC, XLS, dan lainnya
@@ -482,6 +492,7 @@
                             class="custom-file-btn">
 
                             Pilih File
+
                         </label>
 
                         <span
@@ -489,12 +500,14 @@
                             class="file-name">
 
                             Belum ada file dipilih
+
                         </span>
 
                         <input
                             type="file"
                             id="fileInput"
                             name="file"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                             hidden
                             required>
 
@@ -502,13 +515,17 @@
 
                 </div>
 
+                <!-- Submit -->
                 <button
                     type="submit"
                     class="btn btn-submit mt-4 text-white">
 
                     Upload Dokumen
+
                 </button>
+
             </form>
+
         </div>
     </div>
 </div>

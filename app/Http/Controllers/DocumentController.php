@@ -47,7 +47,10 @@ class DocumentController extends Controller
             'nama_dokumen' => 'required',
             'tanggal_upload' => 'required',
             'category_id' => 'required',
-            'file' => 'required|mimes:pdf,jpg,jpeg,png|max:2048'
+            'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:10240'
+        ], [
+            'file.mimes' => 'File hanya boleh PDF, Word, Excel, atau PNG/JPG',
+            'file.max' => 'Ukuran file maksimal 10MB'
         ]);
 
         // upload file
