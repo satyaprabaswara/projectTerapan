@@ -1,11 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Dokumen</title>
+<x-app-layout>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <div class="flex min-h-screen bg-gray-100">
+
+        @include('components.sidebar')
+
+        <main class="flex-1">
+
+            <div class="p-6">
+
+                <div class="upload-wrapper">
+
+                    <div class="upload-card">
+
+                        <div class="row g-0">
+
+                            {{-- LEFT --}}
+                            <div class="col-lg-6 left-side">
+
+                                <h1 class="title">
+                                    Upload Dokumen
+                                </h1>
+
+                                <p class="subtitle">
+                                    Upload dan simpan dokumen perusahaan dengan aman
+                                </p>
+
+                                <form
+                                    action="{{ route('document.store') }}"
+                                    method="POST"
+                                    enctype="multipart/form-data">
+
+                                    @csrf
+
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Nama Dokumen
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="nama_dokumen"
+                                            class="form-control"
+                                            placeholder="Masukkan nama dokumen..."
+                                            required>
+
+                                    </div>
+
+                                    <div class="mb-4">
+
+                                        <label class="form-label fw-semibold">
+                                            Upload File
+                                        </label>
+
+                                        <div class="upload-file">
+
+                                            <h4>📂 Pilih File</h4>
+
+                                            <p class="text-muted">
+                                                Upload dokumen PDF, DOC, XLS, atau file lainnya
+                                            </p>
+
+                                            <input
+                                                type="file"
+                                                name="file"
+                                                required>
+
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-upload">
+
+                                        ⬆ Upload Dokumen
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            {{-- RIGHT --}}
+                            <div class="col-lg-6 right-side">
+
+                                <div>
+
+                                    <img
+                                        src="{{ asset('images/logo.png') }}"
+                                        class="preview-logo"
+                                        alt="Logo">
+
+                                    <h2 class="company-name">
+                                        PT SPR Langgak
+                                    </h2>
+
+                                    <p class="company-desc">
+                                        Sistem Dokumen Digitalisasi Divisi Finance
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
 
     <style>
         body{
@@ -14,11 +122,11 @@
         }
 
         .upload-wrapper{
-            min-height: 100vh;
+            min-height: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
+            align-items: flex-start;
+            padding: 30px 20px;
         }
 
         .upload-card{
@@ -91,8 +199,7 @@
         }
 
         .right-side{
-            background:
-            linear-gradient(
+            background: linear-gradient(
                 135deg,
                 #dbeafe,
                 #f0fdf4
@@ -137,116 +244,8 @@
             .company-desc{
                 font-size:18px;
             }
-
-            
-
-            
         }
     </style>
-</head>
-<body>
 
-<div class="upload-wrapper">
+</x-app-layout>
 
-    <div class="upload-card">
-
-        <div class="row g-0">
-
-            {{-- LEFT --}}
-            <div class="col-lg-6 left-side">
-
-                <h1 class="title">
-                    Upload Dokumen 
-                </h1>
-
-                <p class="subtitle">
-                    Upload dan simpan dokumen perusahaan dengan aman
-                </p>
-
-                <form
-                    action="/dokumen"
-                    method="POST"
-                    enctype="multipart/form-data">
-
-                    @csrf
-
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-                            Nama Dokumen
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nama_dokumen"
-                            class="form-control"
-                            placeholder="Masukkan nama dokumen..."
-                            required>
-
-                    </div>
-
-                    <div class="mb-4">
-
-                        <label class="form-label fw-semibold">
-                            Upload File
-                        </label>
-
-                        <div class="upload-file">
-
-                            <h4>📂 Pilih File</h4>
-
-                            <p class="text-muted">
-                                Upload dokumen PDF, DOC, XLS, atau file lainnya
-                            </p>
-
-                            <input
-                                type="file"
-                                name="file"
-                             required>
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary btn-upload">
-
-                        ⬆ Upload Dokumen
-                    </button>
-
-
-                </form>
-
-            </div>
-
-            {{-- RIGHT --}}
-            <div class="col-lg-6 right-side">
-
-                <div>
-
-                    <img
-                        src="{{ asset('images/logo.png') }}"
-                        class="preview-logo"
-                        alt="Logo">
-
-                    <h2 class="company-name">
-                        PT SPR Langgak
-                    </h2>
-
-                    <p class="company-desc">
-                        Sistem Dokumen Digitalisasi Divisi Finance
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-</body>
-</html>

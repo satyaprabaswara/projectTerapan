@@ -209,7 +209,9 @@
             color:#2563eb !important;
             text-decoration:underline !important;
         }
+
     </style>
+
 
 <x-app-layout>
 
@@ -225,9 +227,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
         <div>
-            <h1 class="page-title">
-                📄 Daftar Dokumen
-            </h1>
+                <h1 class="page-title">
+                            📄 Daftar Dokumen
+                        </h1>
 
             <p class="sub-title">
                 Kelola dan akses dokumen perusahaan
@@ -236,6 +238,7 @@
 
         <button
             class="btn btn-primary btn-upload"
+            type="button"
             data-bs-toggle="modal"
             data-bs-target="#uploadModal">
 
@@ -373,14 +376,15 @@
                         <td class="text-center">
                             <div class="dropdown">
                                 <button
-                                    class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                    class="btn btn-light btn-sm dropdown-toggle"
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     ⋮
                                 </button>
 
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-end">
+
                                     <li>
                                         <a
                                             class="dropdown-item"
@@ -620,25 +624,32 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<!-- Bootstrap JS sudah dimuat di layouts/app.blade.php -->
 <script>
-console.log('bootstrap bundle loaded?', typeof bootstrap, typeof bootstrap.Dropdown);
 document.addEventListener('DOMContentLoaded', () => {
 
     // Prevent Bootstrap modal from stealing focus in a way that blocks dropdown interaction
     const uploadModalEl = document.getElementById('uploadModal');
     if (uploadModalEl) {
         uploadModalEl.addEventListener('shown.bs.modal', () => {
-            // fokus dipindahkan ke tombol close/modal agar tidak meninggalkan focus di elemen tersembunyi
             const closeBtn = uploadModalEl.querySelector('[data-bs-dismiss="modal"]');
             if (closeBtn) closeBtn.focus();
         });
     }
 
+    // Re-initialize Bootstrap dropdowns
+    const dropdownToggles = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+    dropdownToggles.forEach((el) => {
+        try {
+            // eslint-disable-next-line no-new
+            new bootstrap.Dropdown(el);
+        } catch (e) {
+            // ignore
+        }
+    });
+
     const input = document.getElementById('fileInput');
     const fileNameEl = document.getElementById('file-name');
-
 
     if (!input || !fileNameEl) return;
 
