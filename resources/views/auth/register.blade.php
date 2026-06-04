@@ -1,52 +1,355 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - PT SPR Langgak</title>
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{
+            background:#f3f4f6;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+        }
+
+        .login-container{
+            width:950px;
+            min-height:550px;
+            background:white;
+            border-radius:14px;
+            overflow:hidden;
+            display:flex;
+            box-shadow:0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /*Ini Style untuk Logo yang Besar yaa*/
+
+        .left{
+            width:45%;
+            padding:40px;
+            background:white;
+        }
+
+        .top-logo{
+            display:flex;
+            align-items:center;
+            gap:15px;
+            margin-bottom:50px;
+        }
+
+        .top-logo img{
+            width:75px;
+            height:75px;
+            object-fit:contain;
+        }
+
+        .top-logo h2{
+            font-size:20px;
+            color:#111827;
+            margin-bottom:5px;
+        }
+
+        .top-logo p{
+            font-size:13px;
+            color:#6b7280;
+        }
+
+        .title{
+            font-size:48px;
+            font-weight:bold;
+            color:#111827;
+            margin-bottom:10px;
+        }
+
+        .subtitle{
+            color:#6b7280;
+            margin-bottom:35px;
+            font-size:16px;
+        }
+
+        .form-group{
+            margin-bottom:22px;
+        }
+
+        .form-group label{
+            display:block;
+            margin-bottom:10px;
+            font-weight:600;
+            color:#1f2937;
+            font-size:18px;
+        }
+
+        .form-group input{
+            width:100%;
+            padding:15px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            font-size:15px;
+        }
+
+        .form-group input:focus{
+            outline:none;
+            border-color:#4f46e5;
+        }
+
+        .form-error{
+            margin-top:8px;
+            font-size:13px;
+            color:#dc2626;
+        }
+
+        .btn-google{
+            width:100%;
+            padding:15px;
+            background:#4f46e5;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:15px;
+            cursor:pointer;
+            margin-top:5px;
+            transition:0.3s;
+        }
+
+        .btn-google:hover{
+            background:#4338ca;
+        }
+
+        .btn-login{
+            width:100%;
+            padding:15px;
+            background:#67c587;
+            color:white;
+            border:none;
+            border-radius:10px;
+            font-size:15px;
+            cursor:pointer;
+            margin-top:12px;
+            transition:0.3s;
+        }
+
+        .btn-login:hover{
+            background:#4fa96c;
+        }
+
+        .forgot{
+            margin-top:25px;
+            text-align:center;
+            font-size:14px;
+            color:#6b7280;
+        }
+
+        .forgot a{
+            color:#4f46e5;
+            text-decoration:none;
+        }
+
+       /*Ini Style untuk Logo yang Kecil yaa*/
+
+        .right{
+            width:55%;
+            background:linear-gradient(
+                135deg,
+                #dff6ff,
+                #ffffff,
+                #e7f9e7
+            );
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:40px;
+        }
+
+        .right img{
+            width:220px;
+            object-fit:contain;
+            margin-bottom:20px;
+        }
+
+        .right h1{
+            font-size:52px;
+            color:#1f2a44;
+            margin-bottom:10px;
+        }
+
+        .right p{
+            font-size:18px;
+            color:#4b5563;
+        }
+
+        @media(max-width:900px){
+
+            .login-container{
+                flex-direction:column;
+                width:100%;
+            }
+
+            .left,
+            .right{
+                width:100%;
+            }
+
+            .right{
+                padding:50px 20px;
+            }
+
+            .right h1{
+                font-size:36px;
+            }
+
+            .title{
+                font-size:40px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!--Ini Logo Yang Kecil yaa-->
+
+    <div class="left">
+
+        <div class="top-logo">
+
+            <img src="{{ asset('images/logo.png') }}" alt="Logo">
+
+            <div>
+                <h2>PT SPR Langgak</h2>
+
+                <p>
+                    Sistem Dokumen Digitalisasi Divisi Finance
+                </p>
+
+            </div>
+
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="title">
+            Daftar
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="subtitle">
+            Buat akun untuk mulai menggunakan sistem
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+        <form method="POST" action="{{ route('register') }}">
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            @csrf
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+            <div class="form-group">
+                <label>Nama</label>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    placeholder="Masukkan nama..."
+                    required
+                    autofocus
+                    autocomplete="name"
+                >
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+                @if($errors->has('name'))
+                    <div class="form-error">{{ $errors->first('name') }}</div>
+                @endif
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="Masukkan email..."
+                    required
+                    autocomplete="username"
+                >
+
+                @if($errors->has('email'))
+                    <div class="form-error">{{ $errors->first('email') }}</div>
+                @endif
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Masukkan password..."
+                    required
+                    autocomplete="new-password"
+                >
+
+                @if($errors->has('password'))
+                    <div class="form-error">{{ $errors->first('password') }}</div>
+                @endif
+            </div>
+
+            <div class="form-group" style="margin-bottom:10px;">
+                <label>Konfirmasi Password</label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    placeholder="Masukkan konfirmasi password..."
+                    required
+                    autocomplete="new-password"
+                >
+
+                @if($errors->has('password_confirmation'))
+                    <div class="form-error">{{ $errors->first('password_confirmation') }}</div>
+                @endif
+            </div>
+
+            <button type="submit" class="btn-login">
+                Register
+            </button>
+
+            <div class="forgot">
+                Sudah punya akun?
+                <a href="{{ route('login') }}">Login</a>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!--Ini Logo Yang Besar yaa-->
+    <div class="right">
+
+        <img src="{{ asset('images/logo.png') }}" alt="Logo">
+
+        <h1>PT SPR Langgak</h1>
+
+        <p>
+            Sistem Dokumen Digitalisasi Divisi Finance
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+</html>
+

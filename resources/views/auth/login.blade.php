@@ -281,10 +281,17 @@
 
                 Lupa password?
 
-                <a href="#">
+                <a href="{{ route('password.request') }}">
                     Reset password
                 </a>
 
+            </div>
+
+            <div class="forgot" style="margin-top:10px;">
+                Belum punya akun?
+                <a href="{{ route('register') }}">
+                    Daftar
+                </a>
             </div>
 
         </form>

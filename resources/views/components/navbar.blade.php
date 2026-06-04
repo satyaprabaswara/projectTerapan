@@ -47,17 +47,35 @@
 
             <div>
 
-                <div class="fw-semibold">
-                    {{ Auth::user()?->name ?? 'Admin' }}
-                </div>
 
-                <small class="text-muted">
-                    Administrator
-                </small>
+
+                <div class="dropdown">
+                    <button class="btn btn-link p-0 text-decoration-none text-muted"
+                            type="button"
+                            id="profileDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        {{ Auth::user()?->name ?? 'User' }}
+
+
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger">
+                                    🚪 Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
 
             </div>
 
         </div>
+
 
     </div>
 

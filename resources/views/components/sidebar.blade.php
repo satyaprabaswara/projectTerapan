@@ -28,15 +28,7 @@
             📝 Log Aktivitas
         </a>
 
-        <form method="POST"
-              action="{{ route('logout') }}">
-            @csrf
 
-            <button
-                class="border-0 bg-transparent text-danger text-start px-4 py-3 w-100">
-                🚪 Logout
-            </button>
-        </form>
 
     </nav>
 
