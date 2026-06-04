@@ -264,13 +264,9 @@
 
     <!-- TABLE -->
     <div class="card main-card">
-
         <div class="card-body p-4">
-
             <div class="table-responsive">
-
                 <table class="table align-middle">
-
                     <thead>
                         <tr>
                             <th>No</th>

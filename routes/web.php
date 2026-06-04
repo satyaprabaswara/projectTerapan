@@ -6,13 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    // ExampleTest mengharuskan response 200.
-    // Tanpa auth, tampilkan dashboard view apa adanya.
-    return view('dashboard');
-});
-
-
+Route::get('/', [DashboardController::class, 'index'])
+    ->middleware(['auth']);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
