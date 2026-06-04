@@ -244,28 +244,56 @@
 
     </div>
 
-    <!-- SEARCH -->
-    <form
-        method="GET"
-        action="{{ route('document.index') }}"
-        class="mb-4">
+    <!-- SEARCH (sama seperti dashboard: ada kategori + search) -->
+    <div class="bg-white rounded-xl shadow-sm p-3 mb-4">
+        <form
+            method="GET"
+            action="{{ route('document.index') }}">
 
-        <div class="input-group search-box">
+            <div class="row g-3 align-items-end">
 
-            <input
-                type="text"
-                name="search"
-                class="form-control"
-                placeholder="🔍 Cari dokumen..."
-                value="{{ request('search') }}">
+                <!-- Kategori -->
+                <div class="col-md-3">
+                    <select
+                        name="category_id"
+                        class="w-full border rounded-lg px-4 py-2">
+                        <option value="">
+                            Semua Kategori
+                        </option>
+                        @foreach($categories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->nama_kategori }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <button class="btn btn-primary px-4">
-                Cari
-            </button>
+                <!-- Search -->
+                <div class="col-md-7">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari dokumen..."
+                        class="w-full border rounded-lg px-4 py-2">
+                </div>
 
-        </div>
+                <!-- Tombol -->
+                <div class="col-md-2">
+                    <button
+                        type="submit"
+                        class="w-full bg-blue-500 text-white rounded-lg py-2">
+                        Cari
+                    </button>
+                </div>
 
-    </form>
+            </div>
+
+        </form>
+    </div>
+
 
     <!-- TABLE -->
     <div class="card main-card">
@@ -343,34 +371,89 @@
                         </td>
 
                         <td class="text-center">
-                            <div class="d-flex flex-column gap-2 align-items-center">
-                                <a
-                                    href="{{ route('document.view', $d->id) }}"
-                                    target="_blank"
-                                    class="btn btn-info text-white">
-                                    👁 Lihat
-                                </a>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    ⋮
+                                </button>
 
-                                <a
-                                    class="btn btn-success btn-sm"
-                                    href="{{ route('document.download',$d->id) }}">
-                                    ⬇ Download
-                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="{{ route('document.view', $d->id) }}"
+                                            target="_blank">
+                                            Buka dengan... 
+                                        </a>
+                                    </li>
 
-                                <form
-                                    action="{{ route('document.destroy',$d->id) }}"
-                                    method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button
-                                        type="submit"
-                                        onclick="return confirm('Yakin hapus dokumen?')"
-                                        class="btn btn-danger btn-sm">
-                                        🗑 Hapus
-                                    </button>
-                                </form>
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="{{ route('document.download',$d->id) }}">
+                                            Download
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                            onclick="alert('Fitur ganti nama belum diimplementasi'); return false;">
+                                            Ganti nama
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                            onclick="alert('Fitur buat salinan belum diimplementasi'); return false;">
+                                            Buat salinan
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="#"
+                                            onclick="alert('Fitur bagikan belum diimplementasi'); return false;">
+                                            Bagikan
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a
+                                            class="dropdown-item"
+                                            href="{{ route('document.show', $d->id) }}">
+                                            Informasi file
+                                        </a>
+                                    </li>
+
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    <li>
+                                        <form
+                                            action="{{ route('document.destroy',$d->id) }}"
+                                            method="POST"
+                                            class="m-0">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button
+                                                type="submit"
+                                                onclick="return confirm('Yakin hapus dokumen?')"
+                                                class="dropdown-item text-danger">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
                         </td>
+
 
                     </tr>
 
@@ -439,19 +522,7 @@
 
                 </div>
 
-                <!-- Tanggal Upload -->
-                <div class="mb-4">
-                    <label class="fw-semibold mb-2">
-                        Tanggal Upload
-                    </label>
 
-                    <input
-                        type="date"
-                        name="tanggal_upload"
-                        class="form-control form-control-lg rounded-4"
-                        required>
-
-                </div>
 
                 <!-- Kategori -->
                 <div class="mb-4">

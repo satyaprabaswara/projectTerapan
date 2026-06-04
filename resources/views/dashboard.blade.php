@@ -12,35 +12,12 @@
 
     <div class="p-6">
 
-        <!-- HEADER -->
-        <div class="flex justify-between items-center mb-6">
-
-            <div>
-
-                <h2 class="text-3xl font-bold text-gray-700">
-                    Dashboard
-                </h2>
-
-                <p class="text-gray-500">
-                    Selamat datang kembali,
-                    {{ Auth::user()?->name }}
-                </p>
-
-            </div>
-
-            <div class="font-semibold text-gray-700">
-
-                {{ now()->format('d M Y') }}
-
-            </div>
-
-        </div>
-
-        <!-- CARD STATISTIK -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <!-- CARD STATISTIK (diperkecil) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
 
             <!-- Total Dokumen -->
-            <div class="bg-blue-500 text-white p-4 rounded shadow-sm">
+            <div class="bg-blue-500 text-white p-3 rounded-xl shadow-sm">
+
 
                 <h3 class="text-sm opacity-90">
                     Total Dokumen
@@ -53,7 +30,8 @@
             </div>
 
             <!-- Total Kategori -->
-            <div class="bg-green-500 text-white p-5 rounded-2xl shadow-sm">
+            <div class="bg-green-500 text-white p-3 rounded-xl shadow-sm">
+
 
                 <h3 class="text-sm opacity-90">
                     Total Kategori
@@ -66,7 +44,8 @@
             </div>
 
             <!-- Hari Ini -->
-            <div class="bg-yellow-400 text-white p-5 rounded-2xl shadow-sm">
+            <div class="bg-yellow-400 text-white p-3 rounded-xl shadow-sm">
+
 
                 <h3 class="text-sm opacity-90">
                     Dokumen Hari Ini
@@ -79,7 +58,8 @@
             </div>
 
             <!-- User -->
-            <div class="bg-red-400 text-white p-5 rounded-2xl shadow-sm">
+            <div class="bg-red-400 text-white p-3 rounded-xl shadow-sm">
+
 
                 <h3 class="text-sm opacity-90">
                     Total Pengguna
@@ -95,7 +75,8 @@
 
         <!-- FILTER -->
 
-<div class="bg-white rounded-2xl shadow-sm p-4 mb-6">
+                <div class="bg-white rounded-xl shadow-sm p-3 mb-4">
+
 <form
     method="GET"
     action="{{ route('dashboard') }}">

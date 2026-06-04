@@ -16,6 +16,11 @@ class DocumentController extends Controller
     {
         $query = Document::with(['category', 'user']);
 
+        // filter kategori
+        if ($request->category_id) {
+            $query->where('category_id', $request->category_id);
+        }
+
         // search
         if ($request->search) {
             $query->where(
@@ -28,6 +33,7 @@ class DocumentController extends Controller
         $documents = $query
             ->latest()
             ->get();
+
 
         $categories = Category::all();
 
@@ -45,13 +51,13 @@ class DocumentController extends Controller
     {
         $request->validate([
             'nama_dokumen' => 'required',
-            'tanggal_upload' => 'required',
             'category_id' => 'required',
             'file' => 'required|mimes:pdf,doc,docx,xls,xlsx,png,jpg,jpeg|max:10240'
         ], [
             'file.mimes' => 'File hanya boleh PDF, Word, Excel, atau PNG/JPG',
             'file.max' => 'Ukuran file maksimal 10MB'
         ]);
+
 
         // upload file
         $file = $request->file('file');
@@ -70,13 +76,14 @@ class DocumentController extends Controller
         $document = Document::create([
             'nama_dokumen' => $request->nama_dokumen,
             'deskripsi' => $request->deskripsi,
-            'tanggal_upload' => $request->tanggal_upload,
+            'tanggal_upload' => now()->toDateString(),
             'category_id' => $request->category_id,
             'user_id' => $request->user()->id,
             'file' => 'documents/' . $filename,
             'file_size' => $file->getSize(), // bytes
             'deskripsi' => $request->deskripsi,
         ]);
+
 
         // log aktivitas
         ActivityLog::create([

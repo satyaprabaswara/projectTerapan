@@ -33,10 +33,6 @@
         <!-- User -->
         <div class="d-flex align-items-center">
 
-            <span class="me-4">
-                🔔
-            </span>
-
             <div
                 class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
                 style="width:38px;height:38px">
