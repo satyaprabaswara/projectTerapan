@@ -15,15 +15,9 @@ class Category extends Model
 
     public function documents()
     {
-        return $this->hasMany(Document::class);
-    }
-
-    public function up(): void
-    {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_kategori');
-            $table->timestamps();
-        });
+        return $this->hasMany(
+            Document::class,
+            'category_id'
+        );
     }
 }

@@ -1,69 +1,22 @@
 <x-app-layout>
+    
+    <style>
+    .input-group .form-control{
+        border-radius: 14px 0 0 14px !important;
+        height: 54px;
+    }
+
+    .input-group .btn{
+        border-radius: 0 14px 14px 0 !important;
+        min-width: 110px;
+    }
+    </style>
 
 {{-- gunakan layout/warna yang konsisten dengan halaman lain --}}
 <div class="flex min-h-screen bg-gray-100">
 
     <!-- SIDEBAR -->
-    <aside class="bg-white shadow-sm"
-        style="width:260px; min-height:100vh;">
-
-        <div class="p-6 border-b">
-                <h1 class="text-2xl font-bold text-blue-700">PT SPR Langgak</h1>
-                <p class="text-sm text-gray-500">Sistem Dokumentasi Finance</p>
-            </div>
-
-        <nav class="d-flex flex-column mt-3">
-
-            <!-- Dashboard -->
-            <a href="{{ route('dashboard') }}"
-                class="px-4 py-3 text-decoration-none text-dark">
-
-                📊 Dashboard
-            </a>
-
-            <!-- Kelola Dokumen -->
-            <a href="{{ route('document.index') }}"
-                class="px-4 py-3 text-decoration-none text-dark">
-
-                📁 Kelola Dokumen
-            </a>
-
-            <!-- Kategori -->
-            <a href="{{ route('categories.index') }}"
-                class="px-4 py-3 text-decoration-none text-white bg-primary">
-
-                📂 Kategori
-            </a>
-
-            <!-- Pengguna -->
-            <a href="{{ route('users.index') }}"
-                class="px-4 py-3 text-decoration-none text-dark">
-
-                👤 Pengguna
-            </a>
-
-            <!-- Log Aktivitas -->
-            <a href="#"
-                class="px-4 py-3 text-decoration-none text-dark">
-
-                📝 Log Aktivitas
-            </a>
-
-            <!-- Logout -->
-            <form method="POST"
-                action="{{ route('logout') }}">
-
-                @csrf
-
-                <button
-                    class="border-0 bg-transparent text-danger text-start px-4 py-3 w-100">
-
-                    🚪 Logout
-                </button>
-            </form>
-
-        </nav>
-    </aside>
+        @include('components.sidebar')
 
     <!-- CONTENT -->
     <main class="flex-grow-1 p-5">
@@ -80,30 +33,41 @@
                 </p>
             </div>
 
-            <button
-                class="btn btn-primary rounded-pill px-4"
+            <a
+                href="#"
+                class="btn btn-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#kategoriModal">
 
                 + Tambah Kategori
-            </button>
+            </a>
 
         </div>
 
-        <!-- SEARCH (samakan seperti halaman dokumen) -->
+       <!-- SEARCH -->
         <form
             method="GET"
             action="{{ route('categories.index') }}"
             class="mb-4">
 
-            <div class="card-body p-4">
-                    <form method="GET" action="{{ route('users.index') }}" class="mb-0">
-                        <div class="input-group search-box">
-                            <input type="text" name="search" class="form-control" placeholder="🔍 Cari kategori..." value="{{ request('search') }}">
-                            <button class="btn btn-primary px-4" type="submit">Cari</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="input-group shadow-sm">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control border-0 py-3"
+                    placeholder="🔍 Cari kategori..."
+                    value="{{ request('search') }}">
+
+                <button
+                    class="btn btn-primary px-4"
+                    type="submit">
+
+                    Cari
+
+                </button>
+
+            </div>
 
         </form>
 

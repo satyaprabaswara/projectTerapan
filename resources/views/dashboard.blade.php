@@ -1,161 +1,359 @@
 <x-app-layout>
-    <div class="flex min-h-screen bg-gray-100">
 
-        <!-- Sidebar -->
-        <aside class="w-64 min-h-screen bg-white shadow-md">
-            <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-700">
-                    PT SPR Langgak
-                </h1>
-                <p class="text-sm text-gray-500">
-                    Sistem Dokumentasi Finance
-                </p>
-            </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-            <nav class="mt-6">
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📊 Dashboard
-                </a>
+<div class="flex min-h-screen bg-gray-100">
 
-                <a href="/document"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📁 Kelola Dokumen
-                </a>
+    <!-- SIDEBAR -->
+        @include('components.sidebar')
 
-                <a href="{{ route('categories.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline {{ request()->routeIs('categories.*') ? 'bg-blue-500 text-white' : '' }}">
-                    📂 Kategori
-                </a>
+    <!-- CONTENT -->
+    <main class="flex-1">
 
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    👤 Pengguna
-                </a>
+    <div class="p-6">
 
+        <!-- HEADER -->
+        <div class="flex justify-between items-center mb-6">
 
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📝 Log Aktivitas
-                </a>
+            <div>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
-                        🚪 Logout
-                    </button>
-                </form>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-6">
-
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-700">
                     Dashboard
                 </h2>
 
-                <div class="flex items-center gap-4">
-                    <input type="text"
-                        placeholder="Search..."
-                        class="border rounded-lg px-4 py-2">
+                <p class="text-gray-500">
+                    Selamat datang kembali,
+                    {{ Auth::user()?->name }}
+                </p>
 
-
-
-                    <div class="font-semibold">
-                        {{ Auth::user()?->name ?? 'Guest' }}
-                    </div>
-
-                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            <div class="font-semibold text-gray-700">
 
-            <div class="bg-blue-500 text-white p-4 rounded-2xl shadow-sm">
+                {{ now()->format('d M Y') }}
+
+            </div>
+
+        </div>
+
+        <!-- CARD STATISTIK -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+            <!-- Total Dokumen -->
+            <div class="bg-blue-500 text-white p-4 rounded shadow-sm">
 
                 <h3 class="text-sm opacity-90">
                     Total Dokumen
                 </h3>
+
                 <p class="text-3xl font-bold mt-2">
                     {{ $totalDocuments ?? 0 }}
                 </p>
 
             </div>
 
-            <div class="bg-green-500 text-white p-4 rounded-2xl shadow-sm">
+            <!-- Total Kategori -->
+            <div class="bg-green-500 text-white p-5 rounded-2xl shadow-sm">
+
                 <h3 class="text-sm opacity-90">
                     Total Kategori
                 </h3>
+
                 <p class="text-3xl font-bold mt-2">
                     {{ $totalCategories ?? 0 }}
-
                 </p>
+
             </div>
 
-            <div class="bg-yellow-400 text-white p-4 rounded-2xl shadow-sm">
+            <!-- Hari Ini -->
+            <div class="bg-yellow-400 text-white p-5 rounded-2xl shadow-sm">
+
                 <h3 class="text-sm opacity-90">
                     Dokumen Hari Ini
                 </h3>
+
                 <p class="text-3xl font-bold mt-2">
                     {{ $todayDocuments ?? 0 }}
-
                 </p>
+
             </div>
 
-            <div class="bg-red-400 text-white p-4 rounded-2xl shadow-sm">
+            <!-- User -->
+            <div class="bg-red-400 text-white p-5 rounded-2xl shadow-sm">
+
                 <h3 class="text-sm opacity-90">
                     Total Pengguna
                 </h3>
+
                 <p class="text-3xl font-bold mt-2">
                     {{ $totalUsers ?? 0 }}
                 </p>
 
             </div>
+
         </div>
 
-            <!-- Table -->
-            <div class="bg-white rounded-2xl shadow-sm p-6">
-                <h3 class="text-2xl font-bold mb-4">
-                    Daftar Dokumen
-                </h3>
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 text-gray-700">
-                            <th class="p-3 text-left">No</th>
-                            <th class="p-3 text-left">Nama Dokumen</th>
-                            <th class="p-3 text-left">Kategori</th>
-                            <th class="p-3 text-left">Tanggal Upload</th>
-                        </tr>
-                    </thead>
+        <!-- FILTER -->
 
-                    <tbody>
-                        @foreach(($documents ?? []) as $index => $document)
+<div class="bg-white rounded-2xl shadow-sm p-4 mb-6">
+<form
+    method="GET"
+    action="{{ route('dashboard') }}">
 
-                        <tr class="border-b">
-                            <td class="p-3">
-                                {{ $index + 1 }}
-                            </td>
+    <div class="row g-3">
 
-                            <td class="p-3">
-                                {{ $document->nama_dokumen }}
-                            </td>
+        <!-- Kategori -->
+        <div class="col-md-3">
 
-                            <td class="p-3">
-                                {{ $document->category->nama_kategori ?? '-' }}
-                            </td>
+            <select
+                name="category_id"
+                class="w-full border rounded-lg px-4 py-2">
 
-                            <td class="p-3">
-                                {{ $document->created_at->format('d M Y') }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <option value="">
+                    Semua Kategori
+                </option>
+
+                @foreach($categories as $category)
+
+                    <option
+                        value="{{ $category->id }}"
+                        {{ request('category_id') == $category->id ? 'selected' : '' }}>
+
+                        {{ $category->nama_kategori }}
+
+                    </option>
+
+                @endforeach
+
+            </select>
+
+        </div>
+
+        <!-- Search -->
+        <div class="col-md-7">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari dokumen..."
+                class="w-full border rounded-lg px-4 py-2">
+
+        </div>
+
+        <!-- Tombol -->
+        <div class="col-md-2">
+
+            <button
+                type="submit"
+                class="w-full bg-blue-500 text-white rounded-lg py-2">
+
+                Cari
+
+            </button>
+
+        </div>
+
+    </div>
+
+</form>
+
+
+</div>
+
+
+        <!-- CONTENT -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+            <!-- TABEL -->
+            <div class="xl:col-span-2">
+
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+
+                    <div class="flex justify-between items-center mb-4">
+
+                        <h3 class="text-xl font-bold">
+                            Daftar Dokumen
+                        </h3>
+
+                    </div>
+
+                    <table class="w-full border-collapse">
+
+                        <thead>
+
+                            <tr class="bg-gray-50 text-gray-700">
+
+                                <th class="p-3 text-left">
+                                    No
+                                </th>
+
+                                <th class="p-3 text-left">
+                                    Nama Dokumen
+                                </th>
+
+                                <th class="p-3 text-left">
+                                    Kategori
+                                </th>
+
+                                <th class="p-3 text-left">
+                                    Tanggal Upload
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @forelse($documents as $index => $document)
+
+                            <tr class="border-b">
+
+                                <td class="p-3">
+                                    {{ $index + 1 }}
+                                </td>
+
+                                <td class="p-3">
+                                    {{ $document->nama_dokumen }}
+                                </td>
+
+                                <td class="p-3">
+                                    {{ $document->category->nama_kategori ?? '-' }}
+                                </td>
+
+                                <td class="p-3">
+                                    {{ $document->created_at->format('d M Y') }}
+                                </td>
+
+                            </tr>
+
+                            @empty
+
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center py-4 text-gray-500">
+
+                                    Belum ada dokumen
+
+                                </td>
+
+                            </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-        </main>
-    </div>
+            <!-- SIDEBAR KANAN -->
+            <div>
+
+                <!-- CHART -->
+                <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+
+                    <h3 class="text-xl font-bold mb-4">
+
+                        Kategori Dokumen
+
+                    </h3>
+
+                    <div style="height:300px;">
+                        <canvas id="kategoriChart"></canvas>
+                    </div>
+
+                </div>
+
+                <!-- AKTIVITAS -->
+                <div class="bg-white rounded-2xl shadow-sm p-6">
+
+                    <h3 class="text-xl font-bold mb-4">
+
+                        Aktivitas Terbaru
+
+                    </h3>
+
+                    @foreach($documents->take(5) as $document)
+
+                    <div class="mb-4 border-b pb-3">
+
+                        <div class="font-semibold">
+                            Admin
+                        </div>
+
+                        <div class="text-sm text-gray-500">
+
+                            Menambahkan dokumen
+
+                            <strong>
+                                {{ $document->nama_dokumen }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    @endforeach
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+const ctx =
+document.getElementById('kategoriChart');
+
+new Chart(ctx, {
+
+    type: 'pie',
+
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    },
+
+    data: {
+
+        labels: [
+
+            @foreach($categories ?? [] as $category)
+
+                '{{ $category->nama_kategori }}',
+
+            @endforeach
+
+        ],
+
+        datasets: [{
+
+            data: [
+
+                @foreach($categories ?? [] as $category)
+
+                    {{ $category->documents->count() }},
+
+                @endforeach
+
+            ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
 </x-app-layout>

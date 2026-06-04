@@ -1,5 +1,4 @@
 <style>
-        /* gunakan styling dari bootstrap/tailwind yang sudah ada */
         body{
             font-family:'Segoe UI',sans-serif;
         }
@@ -212,85 +211,11 @@
     <div class="flex min-h-screen bg-gray-100">
 
         <!-- Sidebar (tanpa kotak, kebawah seperti dashboard) -->
-        <aside class="w-64 min-h-screen bg-white shadow-lg">
-            <div class="p-6 border-b">
-                <h1 class="text-2xl font-bold text-blue-700">
-                    PT SPR Langgak
-                </h1>
-                <p class="text-sm text-gray-500">
-                    Sistem Dokumentasi Finance
-                </p>
-            </div>
-
-            <nav class="mt-6 flex flex-col">
-
-                <!-- Dashboard -->
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 no-underline
-                    {{ request()->routeIs('dashboard')
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-200' }}">
-
-                    📊 Dashboard
-                </a>
-
-                <!-- Kelola Dokumen -->
-                <a href="{{ route('document.index') }}"
-                    class="flex items-center px-6 py-3 no-underline
-                    {{ request()->routeIs('document.*')
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-200' }}">
-
-                    📁 Kelola Dokumen
-                </a>
-
-                <!-- Kategori -->
-                <a href="{{ route('categories.index') }}"
-                    class="flex items-center px-6 py-3 no-underline
-                    {{ request()->routeIs('categories.*')
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-200' }}">
-
-                    📂 Kategori
-                </a>
-
-                <!-- Pengguna -->
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center px-6 py-3 no-underline
-                    {{ request()->routeIs('users.*')
-                        ? 'bg-blue-500 text-white'
-                        : 'text-gray-700 hover:bg-gray-200' }}">
-
-                    👤 Pengguna
-                </a>
-
-                <!-- Log Aktivitas -->
-                <a href="{{ route('activity.logs') }}"
-                    class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-200 no-underline">
-
-                    📝 Log Aktivitas
-                </a>
-
-
-                <!-- Logout -->
-                <form method="POST"
-                    action="{{ route('logout') }}">
-
-                    @csrf
-
-                    <button
-                        class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
-
-                        🚪 Logout
-                    </button>
-
-                </form>
-
-            </nav>
-        </aside>
+            @include('components.sidebar')
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+            <main class="flex-1">
+            <div class="p-6">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
@@ -482,73 +407,70 @@
                 Upload dan simpan dokumen perusahaan
             </p>
 
-            <form
-                action="{{ route('document.store') }}"
-                method="POST"
-                enctype="multipart/form-data">
+            
+    method="GET"
+    action="{{ route('document.index') }}"
+    class="mb-4">
 
-                @csrf
+        <div class="row g-3">
 
-                <!-- Nama Dokumen -->
-                <div class="mb-4">
+            <!-- Kategori -->
+            <div class="col-md-3">
 
-                    <label class="fw-semibold mb-2">
-                        Nama Dokumen
-                    </label>
+                <select
+                    name="category_id"
+                    class="form-select">
 
-                    <input
-                        type="text"
-                        name="nama_dokumen"
-                        class="form-control form-control-lg rounded-4"
-                        placeholder="Masukkan nama dokumen..."
-                        required>
+                    <option value="">
+                        Semua Kategori
+                    </option>
 
-                </div>
+                    @foreach($categories as $category)
 
-                <!-- Tanggal Upload -->
-                <div class="mb-4">
+                        <option
+                            value="{{ $category->id }}"
+                            {{ request('category_id') == $category->id ? 'selected' : '' }}>
 
-                    <label class="fw-semibold mb-2">
-                        Tanggal Upload
-                    </label>
+                            {{ $category->nama_kategori }}
 
-                    <input
-                        type="date"
-                        name="tanggal_upload"
-                        class="form-control form-control-lg rounded-4"
-                        required>
-
-                </div>
-
-                <!-- Kategori -->
-                <div class="mb-4">
-
-                    <label class="fw-semibold mb-2">
-                        Kategori Dokumen
-                    </label>
-
-                    <select
-                        name="category_id"
-                        class="form-select form-select-lg rounded-4"
-                        required>
-
-                        <option value="">
-                            -- Pilih Kategori --
                         </option>
 
-                        @isset($categories)
-                            @foreach($categories as $c)
-                                <option value="{{ $c->id }}">
-                                    {{ $c->nama_kategori ?? $c->name ?? $c->title ?? $c->id }}
-                                </option>
-                            @endforeach
-                        @endisset
+                    @endforeach
 
-                    </select>
+                </select>
 
-                </div>
+            </div>
 
-                <!-- Upload -->
+            <!-- Search -->
+            <div class="col-md-7">
+
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    placeholder="Cari dokumen..."
+                    value="{{ request('search') }}">
+
+            </div>
+
+            <!-- Button -->
+            <div class="col-md-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary w-100">
+
+                    Cari
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+</form>
+         <!-- Upload -->
                 <div class="upload-area">
 
                     <h4>📁 Pilih File Dokumen</h4>

@@ -39,47 +39,8 @@
 
 <x-app-layout>
     <div class="flex min-h-screen bg-gray-100">
-        <aside class="w-64 min-h-screen bg-white shadow-lg">
-            <div class="p-6 border-b">
-                <h1 class="text-2xl font-bold text-blue-700">PT SPR Langgak</h1>
-                <p class="text-sm text-gray-500">Sistem Dokumentasi Finance</p>
-            </div>
-
-            <nav class="mt-6 flex flex-col">
-                <a href="{{ route('dashboard') }}"
-                   class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📊 Dashboard
-                </a>
-
-                <a href="{{ route('document.index') }}"
-                   class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('document.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📁 Kelola Dokumen
-                </a>
-
-                <a href="{{ route('categories.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('categories.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                    📂 Kategori
-                </a>
-
-
-                <a href="{{ route('users.index') }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl no-underline {{ request()->routeIs('users.index') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-100' }}">
-                    👤 Pengguna
-                </a>
-
-                <a href="#"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📝 Log Aktivitas
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}" class="">
-                    @csrf
-                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
-                        🚪 Logout
-                    </button>
-                </form>
-            </nav>
-        </aside>
+        <!-- SIDEBAR -->
+            @include('components.sidebar')
 
         <main class="flex-1 p-6">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
