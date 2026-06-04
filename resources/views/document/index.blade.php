@@ -204,6 +204,11 @@
             main{ padding: 1rem !important; }
             .d-flex.min-vh-100{ flex-direction: column; }
         }
+
+        td a:hover{
+            color:#2563eb !important;
+            text-decoration:underline !important;
+        }
     </style>
 
 <x-app-layout>
@@ -294,17 +299,23 @@
                         </td>
 
                         <td class="fw-semibold">
-                            {{ $d->nama_dokumen }}
+                            <a
+                                href="{{ route('document.show', $d->id) }}"
+                                class="text-decoration-none fw-semibold text-dark">
+
+                                {{ $d->nama_dokumen }}
+
+                            </a>
                         </td>
 
                         <td class="text-center">
                             <span class="badge-category">
-{{ optional($d->category)->nama_kategori ?? '-' }}
+                                {{ optional($d->category)->nama_kategori ?? '-' }}
                             </span>
                         </td>
 
                         <td>
-{{ optional($d->user)->name ?? '-' }}
+                            {{ optional($d->user)->name ?? '-' }}
                         </td>
 
                         <td class="text-center">
@@ -334,9 +345,9 @@
                         <td class="text-center">
                             <div class="d-flex flex-column gap-2 align-items-center">
                                 <a
-                                    class="btn btn-info btn-sm"
-                                    href="{{ asset('storage/'.$d->file) }}"
-                                    target="_blank">
+                                    href="{{ route('document.view', $d->id) }}"
+                                    target="_blank"
+                                    class="btn btn-info text-white">
                                     👁 Lihat
                                 </a>
 
@@ -415,7 +426,6 @@
 
                 <!-- Nama Dokumen -->
                 <div class="mb-4">
-
                     <label class="fw-semibold mb-2">
                         Nama Dokumen
                     </label>
@@ -431,7 +441,6 @@
 
                 <!-- Tanggal Upload -->
                 <div class="mb-4">
-
                     <label class="fw-semibold mb-2">
                         Tanggal Upload
                     </label>
@@ -446,7 +455,6 @@
 
                 <!-- Kategori -->
                 <div class="mb-4">
-
                     <label class="fw-semibold mb-2">
                         Kategori Dokumen
                     </label>
@@ -474,9 +482,22 @@
 
                 </div>
 
+                <!-- Deskripsi -->
+                <div class="mb-4">
+                    <label class="fw-semibold mb-2">
+                        Deskripsi
+                    </label>
+
+                    <textarea
+                        name="deskripsi"
+                        class="form-control rounded-4"
+                        rows="4"
+                        placeholder="Masukkan deskripsi dokumen..."></textarea>
+
+                </div>
+
                 <!-- Upload Area -->
                 <div class="upload-area mt-4">
-
                     <h4>
                         📁 Pilih File Dokumen
                     </h4>
@@ -486,7 +507,6 @@
                     </p>
 
                     <div class="file-upload-box">
-
                         <label
                             for="fileInput"
                             class="custom-file-btn">
@@ -512,7 +532,6 @@
                             required>
 
                     </div>
-
                 </div>
 
                 <!-- Submit -->

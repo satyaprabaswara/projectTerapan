@@ -30,16 +30,6 @@
     </div>
 
 </div>
-
-        <!-- Search -->
-        <div style="margin-left:400px; margin-right:40px;">
-            <input
-                type="text"
-                class="form-control"
-                placeholder="Search..."
-                style="width:320px">
-        </div>
-
         <!-- User -->
         <div class="d-flex align-items-center">
 

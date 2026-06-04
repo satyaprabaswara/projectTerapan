@@ -75,6 +75,7 @@ class DocumentController extends Controller
             'user_id' => $request->user()->id,
             'file' => 'documents/' . $filename,
             'file_size' => $file->getSize(), // bytes
+            'deskripsi' => $request->deskripsi,
         ]);
 
         // log aktivitas
@@ -131,5 +132,22 @@ class DocumentController extends Controller
     {
         return Storage::disk('public')
             ->download($document->file);
+    }
+
+    public function show($id)
+    {
+        $document = Document::with('category')->findOrFail($id);
+
+        return view(
+            'document.show',
+            compact('document')
+        );
+    }
+
+    public function view(Document $document)
+    {
+        $filePath = storage_path('app/public/' . $document->file);
+
+        return response()->file($filePath);
     }
 }

@@ -32,6 +32,16 @@ Route::resource(
 );
 
 Route::get(
+    '/document/{id}',
+    [DocumentController::class, 'show']
+)->name('document.show');
+
+Route::get(
+    '/document/view/{document}',
+    [DocumentController::class, 'view']
+)->name('document.view');
+
+Route::get(
     '/document/download/{document}',
     [DocumentController::class, 'download']
 )->name('document.download');
