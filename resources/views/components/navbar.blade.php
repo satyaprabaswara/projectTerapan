@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm"
+<nav class="navbar bg-white border-bottom shadow-sm"
      style="height:70px;">
 
-    <div class="container-fluid">
+    <div class="container-fluid px-2 px-lg-3">
 
         <!-- Logo -->
 <div class="d-flex align-items-center">
@@ -22,7 +22,7 @@
             PT SPR Langgak
         </h5>
 
-        <small class="text-muted"
+        <small class="text-muted d-none d-md-inline"
                style="font-size:16px;">
             Sistem Dokumentasi Digitalisasi Divisi Finance
         </small>
@@ -31,7 +31,7 @@
 
 </div>
         <!-- User -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-end flex-grow-1">
 
             <div
                 class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
@@ -55,12 +55,12 @@
 
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="z-index:2000;">
                             <li>
-                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    🚪 Logout
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}" class="d-none">
+                                <form method="POST" action="{{ route('logout') }}" class="d-none" id="logout-form">
                                     @csrf
                                 </form>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    🚪 Logout
+                                </a>
                             </li>
                         </ul>
                     </div>

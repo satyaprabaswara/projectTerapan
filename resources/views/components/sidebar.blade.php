@@ -13,15 +13,20 @@
             📁 Kelola Dokumen
         </a>
 
-        <a href="{{ route('categories.index') }}"
-           class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('categories.*') ? 'bg-primary text-white' : 'text-dark' }}">
-            📂 Kategori
-        </a>
+        @php($role = Auth::user()?->role ?? '')
 
-        <a href="{{ route('users.index') }}"
-           class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('users.*') ? 'bg-primary text-white' : 'text-dark' }}">
-            👤 Pengguna
-        </a>
+        @if($role === 'admin')
+            <a href="{{ route('categories.index') }}"
+               class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('categories.*') ? 'bg-primary text-white' : 'text-dark' }}">
+                📂 Kategori
+            </a>
+
+            <a href="{{ route('users.index') }}"
+               class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('users.*') ? 'bg-primary text-white' : 'text-dark' }}">
+                👤 Pengguna
+            </a>
+        @endif
+
 
         <a href="#"
            class="d-block px-4 py-3 text-decoration-none text-dark">
