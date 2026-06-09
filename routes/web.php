@@ -52,4 +52,12 @@ Route::get('/debug/user-role', [\App\Http\Controllers\UserRoleDebugController::c
     ->middleware('auth')
     ->name('debug.user-role');
 
+Route::get('/profile', function () {
+    return view('profile.index');
+})->name('profile');
+
+Route::get('/settings', function () {
+    return view('settings.index');
+})->name('settings');
+
 require __DIR__.'/auth.php';

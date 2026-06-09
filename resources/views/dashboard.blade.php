@@ -12,66 +12,102 @@
 
     <div class="p-6">
 
-        <!-- CARD STATISTIK (diperkecil) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
+       <!-- CARD STATISTIK -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
 
-            <!-- Total Dokumen -->
-            <div class="bg-blue-500 text-white p-3 rounded-xl shadow-sm">
+        <!-- Total Dokumen -->
+        <div
+            class="text-white p-4 rounded-xl shadow-sm"
+            style="background:linear-gradient(135deg,#2563eb,#60a5fa);">
 
+            <div class="flex items-center justify-between">
 
-                <h3 class="text-sm opacity-90">
-                    Total Dokumen
-                </h3>
+                <div>
+                    <h3 class="text-sm opacity-90">
+                        Total Dokumen
+                    </h3>
 
-                <p class="text-3xl font-bold mt-2">
-                    {{ $totalDocuments ?? 0 }}
-                </p>
+                    <p class="text-4xl font-bold mt-2">
+                        {{ $totalDocuments ?? 0 }}
+                    </p>
+                </div>
 
-            </div>
-
-            <!-- Total Kategori -->
-            <div class="bg-green-500 text-white p-3 rounded-xl shadow-sm">
-
-
-                <h3 class="text-sm opacity-90">
-                    Total Kategori
-                </h3>
-
-                <p class="text-3xl font-bold mt-2">
-                    {{ $totalCategories ?? 0 }}
-                </p>
-
-            </div>
-
-            <!-- Hari Ini -->
-            <div class="bg-yellow-400 text-white p-3 rounded-xl shadow-sm">
-
-
-                <h3 class="text-sm opacity-90">
-                    Dokumen Hari Ini
-                </h3>
-
-                <p class="text-3xl font-bold mt-2">
-                    {{ $todayDocuments ?? 0 }}
-                </p>
-
-            </div>
-
-            <!-- User -->
-            <div class="bg-red-400 text-white p-3 rounded-xl shadow-sm">
-
-
-                <h3 class="text-sm opacity-90">
-                    Total Pengguna
-                </h3>
-
-                <p class="text-3xl font-bold mt-2">
-                    {{ $totalUsers ?? 0 }}
-                </p>
+                <i class="bi bi-file-earmark-text-fill text-5xl opacity-75"></i>
 
             </div>
 
         </div>
+
+        <!-- Total Kategori -->
+        <div
+            class="text-white p-4 rounded-xl shadow-sm"
+            style="background:linear-gradient(135deg,#22c55e,#86efac);">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="text-sm opacity-90">
+                        Total Kategori
+                    </h3>
+
+                    <p class="text-4xl font-bold mt-2">
+                        {{ $totalCategories ?? 0 }}
+                    </p>
+                </div>
+
+                <i class="bi bi-folder-fill text-5xl opacity-75"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Dokumen Hari Ini -->
+        <div
+            class="text-white p-4 rounded-xl shadow-sm"
+            style="background:linear-gradient(135deg,#eab308,#fde047);">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="text-sm opacity-90">
+                        Dokumen Hari Ini
+                    </h3>
+
+                    <p class="text-4xl font-bold mt-2">
+                        {{ $todayDocuments ?? 0 }}
+                    </p>
+                </div>
+
+                <i class="bi bi-calendar-check-fill text-5xl opacity-75"></i>
+
+            </div>
+
+        </div>
+
+        <!-- Total Pengguna -->
+        <div
+            class="text-white p-4 rounded-xl shadow-sm"
+            style="background:linear-gradient(135deg,#ef4444,#fca5a5);">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+                    <h3 class="text-sm opacity-90">
+                        Total Pengguna
+                    </h3>
+
+                    <p class="text-4xl font-bold mt-2">
+                        {{ $totalUsers ?? 0 }}
+                    </p>
+                </div>
+
+                <i class="bi bi-people-fill text-5xl opacity-75"></i>
+
+            </div>
+
+        </div>
+
+    </div>
 
         <!-- FILTER -->
 
