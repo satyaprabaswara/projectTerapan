@@ -1,92 +1,103 @@
 <style>
-.sidebar {
-    width: 220px;
-    min-height: 100vh;
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-}
+    .sidebar {
+        width: 240px;
+        min-height: 100vh;
+        background: #ffffff;
+        border-right: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+    }
 
-.sidebar-menu {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 22px;
-    text-decoration: none;
-    color: #4b5563;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all .3s ease;
-}
+    .sidebar-logo {
+        padding: 24px 22px 10px;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 10px;
+    }
 
-.sidebar-menu:hover {
-    background: #f3f4f6;
-    color: #2563eb;
-}
+    .sidebar-logo h4 {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+        color: #111827;
+    }
 
-.sidebar-menu.active {
-    background: #2563eb;
-    color: white;
-}
+    .sidebar-logo p {
+        font-size: 13px;
+        color: #6b7280;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
 
-.sidebar-menu i {
-    font-size: 16px;
-}
+    .sidebar-menu {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 22px;
+        margin: 4px 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #4b5563;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all .3s ease;
+    }
 
-.logout-btn {
-    width: 100%;
-    border: none;
-    background: none;
-    text-align: left;
-}
+    .sidebar-menu:hover {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .sidebar-menu.active {
+        background: #2563eb;
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .logout-btn {
+        width: calc(100% - 24px);
+        border: none;
+        background: none;
+        text-align: left;
+    }
+
+    .logout-btn:hover {
+        background: #fef2f2;
+        color: #dc2626 !important;
+    }
 </style>
 
 <aside class="sidebar">
+    <!-- Menu -->
+    <nav class="pt-2">
 
-    <nav class="pt-3">
-
+        <!-- Dashboard -->
         <a href="{{ route('dashboard') }}"
            class="sidebar-menu {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-            <i class="bi bi-speedometer2"></i>
-            Dashboard
+            📊 Dashboard
         </a>
 
+        <!-- Dokumen -->
         <a href="{{ route('document.index') }}"
            class="sidebar-menu {{ request()->routeIs('document.*') ? 'active' : '' }}">
-            <i class="bi bi-folder-fill"></i>
-            Kelola Dokumen
+            📁 Kelola Dokumen
         </a>
 
+        <!-- Kategori -->
         <a href="{{ route('categories.index') }}"
            class="sidebar-menu {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-            <i class="bi bi-file-earmark-text"></i>
-            Kategori
+            📂 Kategori
         </a>
 
+        <!-- Pengguna -->
         <a href="{{ route('users.index') }}"
            class="sidebar-menu {{ request()->routeIs('users.*') ? 'active' : '' }}">
-            <i class="bi bi-people-fill"></i>
-            Pengguna
+            👤 Pengguna
         </a>
 
-        <a href="#"
-           class="sidebar-menu">
-            <i class="bi bi-clock-history"></i>
-            Log Aktivitas
+        <!-- Log Aktivitas -->
+        <a href="{{ route('activity.logs') }}"
+           class="sidebar-menu {{ request()->routeIs('activity.logs') ? 'active' : '' }}">
+            📝 Log Aktivitas
         </a>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit"
-                    class="sidebar-menu logout-btn text-danger">
-
-                <i class="bi bi-box-arrow-right"></i>
-                Logout
-
-            </button>
-
-        </form>
-
     </nav>
-
 </aside>

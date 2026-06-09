@@ -1,94 +1,232 @@
 <x-app-layout>
-    <div class="flex min-h-screen bg-gray-100">
+
+    <div class="d-flex min-vh-100 bg-light">
+
         <!-- Sidebar -->
-        <aside class="w-64 min-h-screen bg-white shadow-md">
-            <div class="p-6">
-                <h1 class="text-2xl font-bold text-blue-700">PT SPR Langgak</h1>
-                <p class="text-sm text-gray-500">Sistem Dokumentasi Finance</p>
-            </div>
-            <nav class="mt-6">
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📊 Dashboard
-                </a>
-                <a href="{{ route('document.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📁 Kelola Dokumen
-                </a>
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📂 Kategori
-                </a>
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 bg-gray-100 no-underline">
-                    👤 Pengguna
-                </a>
-                <a href="#"
-                    class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100 no-underline">
-                    📝 Log Aktivitas
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">🚪 Logout</button>
-                </form>
-            </nav>
-        </aside>
+        @include('components.sidebar')
 
-        <main class="flex-1 p-6">
-            <div class="mb-6">
-                <h2 class="text-3xl font-bold text-gray-700">Edit Pengguna</h2>
-                <p class="text-sm text-gray-500">Hanya admin yang bisa mengubah user</p>
+        <!-- Main Content -->
+        <main class="flex-grow-1 p-4">
+
+            <!-- Header -->
+            <div class="mb-4">
+
+                <h1 class="fw-bold"
+                    style="font-size: 40px;">
+
+                    ✏️ Edit Pengguna
+
+                </h1>
+
+                <p class="text-muted fs-5 mb-0">
+
+                    Hanya admin yang bisa mengubah data pengguna
+
+                </p>
+
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm p-6 max-w-2xl">
-                <form method="POST" action="{{ route('users.update', $user->id) }}">
+            <!-- Card -->
+            <div class="bg-white rounded-5 shadow-sm border p-5"
+                 style="max-width: 750px;">
+
+                <!-- Title -->
+                <div class="mb-4">
+
+                    <h3 class="fw-bold text-dark">
+
+                        Form Edit Pengguna
+
+                    </h3>
+
+                    <p class="text-muted mb-0">
+
+                        Perbarui data pengguna lalu klik tombol update
+
+                    </p>
+
+                </div>
+
+                <!-- Form -->
+                <form method="POST"
+                      action="{{ route('users.update', $user->id) }}">
+
                     @csrf
                     @method('PUT')
 
+                    <!-- Nama -->
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nama</label>
-                        <input name="name" value="{{ old('name', $user->name) }}" class="w-full border rounded-xl px-4 py-3" required>
+
+                        <label class="form-label fw-semibold">
+
+                            Nama Lengkap
+
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            value="{{ old('name', $user->name) }}"
+                            class="form-control rounded-4 py-3 px-4"
+                            placeholder="Masukkan nama lengkap"
+                            required>
+
+                        @error('name')
+
+                            <div class="text-danger small mt-2">
+
+                                {{ $message }}
+
+                            </div>
+
+                        @enderror
+
                     </div>
 
+                    <!-- Email -->
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                        <input name="email" value="{{ old('email', $user->email) }}" type="email" class="w-full border rounded-xl px-4 py-3" required>
+
+                        <label class="form-label fw-semibold">
+
+                            Email
+
+                        </label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email', $user->email) }}"
+                            class="form-control rounded-4 py-3 px-4"
+                            placeholder="Masukkan email"
+                            required>
+
                         @error('email')
-                            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+
+                            <div class="text-danger small mt-2">
+
+                                {{ $message }}
+
+                            </div>
+
                         @enderror
+
                     </div>
 
+                    <!-- Password -->
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Password (opsional)</label>
-                        <input name="password" type="password" class="w-full border rounded-xl px-4 py-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Password Baru
+                            <span class="text-muted fw-normal">
+                                (Opsional)
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control rounded-4 py-3 px-4"
+                            placeholder="Kosongkan jika tidak ingin mengganti password">
+
                         @error('password')
-                            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+
+                            <div class="text-danger small mt-2">
+
+                                {{ $message }}
+
+                            </div>
+
                         @enderror
+
                     </div>
 
+                    <!-- Konfirmasi Password -->
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Password</label>
-                        <input name="password_confirmation" type="password" class="w-full border rounded-xl px-4 py-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Konfirmasi Password
+
+                        </label>
+
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            class="form-control rounded-4 py-3 px-4"
+                            placeholder="Ulangi password baru">
+
                     </div>
 
-                    <div class="mb-6">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
-                        <select name="role" class="w-full border rounded-xl px-4 py-3" required>
-                            <option value="admin" {{ old('role', $user->role)==='admin' ? 'selected' : '' }}>admin</option>
-                            <option value="viewer" {{ old('role', $user->role)==='viewer' ? 'selected' : '' }}>viewer</option>
+                    <!-- Role -->
+                    <div class="mb-5">
+
+                        <label class="form-label fw-semibold">
+
+                            Role Pengguna
+
+                        </label>
+
+                        <select
+                            name="role"
+                            class="form-select rounded-4 py-3 px-4"
+                            required>
+
+                            <option value="admin"
+                                {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>
+
+                                👑 Admin
+
+                            </option>
+
+                            <option value="viewer"
+                                {{ old('role', $user->role) === 'viewer' ? 'selected' : '' }}>
+
+                                👀 Viewer
+
+                            </option>
+
                         </select>
+
                         @error('role')
-                            <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
+
+                            <div class="text-danger small mt-2">
+
+                                {{ $message }}
+
+                            </div>
+
                         @enderror
+
                     </div>
 
-                    <div class="flex gap-3">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold">Update</button>
-                        <a href="{{ route('users.index') }}" class="border px-5 py-3 rounded-xl font-semibold text-gray-700 hover:bg-gray-50">Batal</a>
+                    <!-- Buttons -->
+                    <div class="d-flex gap-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary rounded-4 px-5 py-3 fw-semibold shadow-sm">
+
+                            💾 Update
+
+                        </button>
+
+                        <a href="{{ route('users.index') }}"
+                           class="btn btn-light border rounded-4 px-5 py-3 fw-semibold">
+
+                            ❌ Batal
+
+                        </a>
+
                     </div>
+
                 </form>
-            </div>
-        </main>
-    </div>
-</x-app-layout>
 
+            </div>
+
+        </main>
+
+    </div>
+
+</x-app-layout>

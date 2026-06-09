@@ -1,133 +1,310 @@
 <x-app-layout>
-    <div class="flex min-h-screen bg-gray-100">
 
-        <!-- Sidebar (ikut styling yang dipakai di halaman lain) -->
-        <aside class="w-64 min-h-screen bg-white shadow-lg">
-            <div class="p-6 border-b">
-                <h1 class="text-2xl font-bold text-blue-700">PT SPR Langgak</h1>
-                <p class="text-sm text-gray-500">Sistem Dokumentasi Finance</p>
-            </div>
+<div class="d-flex bg-light min-vh-100">
 
-            <nav class="mt-6 flex flex-col">
-                <a href="{{ route('dashboard') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📊 Dashboard
-                </a>
+    <!-- Sidebar -->
+    @include('components.sidebar')
 
-                <a href="{{ route('document.index') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('document.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📁 Kelola Dokumen
-                </a>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
 
-                <a href="{{ route('categories.index') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('categories.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    📂 Kategori
-                </a>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-                <a href="{{ route('users.index') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('users.*') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
-                    👤 Pengguna
-                </a>
+            <div>
 
-                <a href="{{ route('activity.logs') }}"
-                    class="flex items-center px-6 py-3 no-underline {{ request()->routeIs('activity.logs') ? 'bg-blue-500 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                <h1 class="fw-bold mb-1"
+                    style="font-size: 42px;">
+
                     📝 Log Aktivitas
-                </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="w-full text-left px-6 py-3 text-red-500 hover:bg-red-100">
-                        🚪 Logout
+                </h1>
+
+                <p class="text-muted fs-5 mb-0">
+                    Riwayat semua aktivitas yang terjadi dalam sistem.
+                </p>
+
+            </div>
+
+            <!-- Filter -->
+            <div>
+
+                <form method="GET">
+
+                <div class="d-flex gap-2">
+
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ request('date') }}"
+                        class="form-control rounded-4 shadow-sm">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary rounded-4 px-4">
+
+                        Filter
+
                     </button>
-                </form>
-            </nav>
-        </aside>
 
-        <main class="flex-1 p-6">
-            <div class="mb-4">
-                <h1 class="text-3xl font-bold text-blue-700">📝 Log Aktivitas</h1>
-                <p class="text-gray-600 mt-1">Aktivitas terbaru akun kamu (upload & hapus dokumen).</p>
+                    <a
+                        href="{{ route('activity.logs') }}"
+                        class="btn bg-white border rounded-4 px-4 shadow-sm">
+
+                        Semua
+
+                    </a>
+
+                </div>
+
+            </form>
+
             </div>
 
-            <div class="bg-white rounded-2xl shadow overflow-hidden">
-                <div class="px-4 py-3 border-b flex items-center justify-between gap-3 flex-wrap">
-                    <div>
-                        <h2 class="text-lg font-bold text-gray-800">Riwayat Aktivitas</h2>
-                        <p class="text-sm text-gray-600">{{ $logs->total() }} log ditemukan</p>
-                    </div>
-                </div>
+        </div>
 
-                <div class="p-4">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Aksi</th>
-                                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Tanggal</th>
-                                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">User</th>
-                                    <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Deskripsi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                    @forelse($logs as $log)
-                        @php
-                            $action = $log->action ?? '';
-                            $badgeClass = match(true) {
-                                str_contains($action, 'created') => 'bg-emerald-100 text-emerald-700',
-                                str_contains($action, 'updated') => 'bg-blue-100 text-blue-700',
-                                str_contains($action, 'deleted') => 'bg-rose-100 text-rose-700',
-                                default => 'bg-slate-100 text-slate-700',
-                            };
+        <!-- Card -->
+        <div class="bg-white rounded-5 shadow-sm overflow-hidden border">
 
-                            $createdAt = optional($log->created_at);
-                            $timeText = $createdAt ? $createdAt->format('d M Y, H:i') : '-';
-                            $description = $log->description ?: $log->action;
+            <!-- Table -->
+            <div class="table-responsive">
 
-                            $who = $log->user?->name;
-                            if (!$who) {
-                                $who = $log->user?->email;
-                            }
-                            if (!$who) {
-                                $who = '';
-                            }
-                        @endphp
+                <table class="table align-middle mb-0">
 
-                        <tr>
-                            <td class="px-3 py-3 whitespace-nowrap">
-                                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $badgeClass }}">
-                                    {{ $action }}
-                                </span>
-                            </td>
+                    <thead class="border-bottom">
 
-                            <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-700">
-                                {{ $timeText }}
-                            </td>
+                        <tr class="text-secondary">
 
-                            <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-800">
-                                {{ $who ?: '-' }}
-                            </td>
+                            <th class="px-4 py-4 fw-semibold">
+                                User
+                            </th>
 
-                            <td class="px-3 py-3 text-sm text-gray-800 break-words">
-                                {{ $description }}
-                            </td>
+                            <th class="px-4 py-4 fw-semibold">
+                                Aktivitas
+                            </th>
+
+                            <th class="px-4 py-4 fw-semibold">
+                                Dokumen
+                            </th>
+
+                            <th class="px-4 py-4 fw-semibold">
+                                Waktu
+                            </th>
+
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="px-3 py-10">
-                                <div class="text-center text-gray-500">Belum ada aktivitas.</div>
-                            </td>
-                        </tr>
-                    @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                <div class="px-4 py-3 border-t">
-                    {{ $logs->links() }}
-                </div>
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($logs as $log)
+
+                            @php
+
+                                $action = strtolower($log->action ?? '');
+
+                                if(str_contains($action,'upload') || str_contains($action,'created')){
+
+                                    $badge = 'bg-success-subtle text-success';
+                                    $icon = '⬆️';
+                                    $title = 'Upload Dokumen';
+                                    $subtitle = 'Mengunggah dokumen baru';
+
+                                }
+
+                                elseif(str_contains($action,'download')){
+
+                                    $badge = 'bg-primary-subtle text-primary';
+                                    $icon = '⬇️';
+                                    $title = 'Download Dokumen';
+                                    $subtitle = 'Mengunduh dokumen';
+
+                                }
+
+                                elseif(str_contains($action,'edit') || str_contains($action,'updated')){
+
+                                    $badge = 'bg-warning-subtle text-warning';
+                                    $icon = '✏️';
+                                    $title = 'Edit Dokumen';
+                                    $subtitle = 'Mengubah informasi dokumen';
+
+                                }
+
+                                elseif(str_contains($action,'delete') || str_contains($action,'deleted')){
+
+                                    $badge = 'bg-danger-subtle text-danger';
+                                    $icon = '🗑️';
+                                    $title = 'Hapus Dokumen';
+                                    $subtitle = 'Menghapus dokumen';
+
+                                }
+
+                                else{
+
+                                    $badge = 'bg-secondary-subtle text-secondary';
+                                    $icon = '📄';
+                                    $title = $log->action;
+                                    $subtitle = 'Aktivitas dokumen';
+
+                                }
+
+                                $fileName = $log->document->nama_dokumen ?? '-';
+
+                                $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+
+                                if($ext == 'pdf'){
+                                    $fileIcon = '📕';
+                                }
+                                elseif($ext == 'docx' || $ext == 'doc'){
+                                    $fileIcon = '📘';
+                                }
+                                elseif($ext == 'xlsx' || $ext == 'xls'){
+                                    $fileIcon = '📗';
+                                }
+                                else{
+                                    $fileIcon = '📄';
+                                }
+
+                            @endphp
+
+                            <tr class="border-bottom">
+
+                                <!-- User -->
+                                <td class="px-4 py-4">
+
+                                    <div class="d-flex align-items-center gap-3">
+
+                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                                             style="width:60px; height:60px; font-size:24px;">
+
+                                            👤
+
+                                        </div>
+
+                                        <div>
+
+                                            <div class="fw-bold fs-5">
+
+                                                {{ $log->user?->name ?? '-' }}
+
+                                            </div>
+
+                                            <div class="text-muted">
+
+                                                Administrator
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Aktivitas -->
+                                <td class="px-4 py-4">
+
+                                    <div class="d-inline-flex align-items-center gap-3 px-4 py-3 rounded-4 {{ $badge }}">
+
+                                        <div style="font-size:24px;">
+
+                                            {{ $icon }}
+
+                                        </div>
+
+                                        <div>
+
+                                            <div class="fw-bold">
+
+                                                {{ $title }}
+
+                                            </div>
+
+                                            <small>
+
+                                                {{ $subtitle }}
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Dokumen -->
+                                <td class="px-4 py-4">
+
+                                    <div class="d-flex align-items-center gap-3">
+
+                                        <div style="font-size:34px;">
+
+                                            {{ $fileIcon }}
+
+                                        </div>
+
+                                        <div>
+
+                                            <div class="fw-bold fs-5">
+
+                                                {{ $fileName }}
+
+                                            </div>
+
+                                            <div class="text-muted">
+
+                                                {{ $log->document->file_size ?? '-' }}
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Waktu -->
+                                <td class="px-4 py-4">
+
+                                    <div class="fw-semibold fs-5">
+
+                                        {{ $log->created_at->diffForHumans() }}
+
+                                    </div>
+
+                                    <div class="text-muted">
+
+                                        {{ $log->created_at->format('d M Y, H:i') }}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center py-5 text-muted fs-5">
+
+                                    Belum ada aktivitas.
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
             </div>
-        </main>
+
+        </div>
+
     </div>
+</div>
 </x-app-layout>
-

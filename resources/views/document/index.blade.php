@@ -385,75 +385,90 @@
 
                                 <ul class="dropdown-menu dropdown-menu-end">
 
+                                    <!-- LIHAT DOKUMEN -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="{{ route('document.view', $d->id) }}"
                                             target="_blank">
-                                            Buka dengan... 
+
+                                            👁️ Lihat Dokumen
+
                                         </a>
                                     </li>
 
+                                    <!-- DOWNLOAD -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="{{ route('document.download',$d->id) }}">
-                                            Download
+
+                                            ⬇️ Download
+
                                         </a>
                                     </li>
 
+                                    <!-- GANTI NAMA -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="#"
                                             onclick="alert('Fitur ganti nama belum diimplementasi'); return false;">
-                                            Ganti nama
+
+                                            ✏️ Ganti Nama
+
                                         </a>
                                     </li>
 
+                                    <!-- BUAT SALINAN -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="#"
                                             onclick="alert('Fitur buat salinan belum diimplementasi'); return false;">
-                                            Buat salinan
+
+                                            📄 Buat Salinan
+
                                         </a>
                                     </li>
 
-                                    <li>
-                                        <a
-                                            class="dropdown-item"
-                                            href="#"
-                                            onclick="alert('Fitur bagikan belum diimplementasi'); return false;">
-                                            Bagikan
-                                        </a>
-                                    </li>
-
+                                    <!-- INFORMASI FILE -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="{{ route('document.show', $d->id) }}">
-                                            Informasi file
+
+                                            ℹ️ Informasi File
+
                                         </a>
                                     </li>
 
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
 
+                                    <!-- HAPUS -->
                                     <li>
                                         <form
                                             action="{{ route('document.destroy',$d->id) }}"
                                             method="POST"
                                             class="m-0">
+
                                             @csrf
                                             @method('DELETE')
+
                                             <button
                                                 type="submit"
                                                 onclick="return confirm('Yakin hapus dokumen?')"
                                                 class="dropdown-item text-danger">
-                                                Hapus
+
+                                                🗑️ Hapus
+
                                             </button>
+
                                         </form>
                                     </li>
+
                                 </ul>
                             </div>
                         </td>
