@@ -1,4 +1,4 @@
-<nav class="navbar bg-white border-bottom shadow-sm" style="height:70px;">
+<nav class="navbar bg-white border-bottom shadow-sm" style="height:70px; position: sticky; top: 0; z-index: 30;">
 
     <div class="container-fluid px-2 px-lg-3">
 

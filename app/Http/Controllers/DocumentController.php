@@ -5,16 +5,47 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use App\Models\Category;
 use App\Models\ActivityLog;
+use App\Models\DocumentShare;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 
 class DocumentController extends Controller
 {
+    private function currentUserId(): ?int
+    {
+        return Auth::id();
+    }
+
+    private function currentIsAdmin(): bool
+    {
+        $user = Auth::user();
+        return $user && is_string($user->role) && strtolower($user->role) === 'admin';
+    }
+
     // halaman daftar dokumen
     public function index(Request $request)
-
     {
+        $userId = $this->currentUserId();
+        $isAdmin = $this->currentIsAdmin();
+
         $query = Document::with(['category', 'user']);
+
+        // kontrol akses "seperti gdrive"
+        if (!$isAdmin) {
+            $query->where(function ($q) use ($userId) {
+                $q->where('visibility', 'public')
+                  ->orWhere('user_id', $userId)
+                  ->orWhere(function ($sub) use ($userId) {
+                      $sub->where('visibility', 'shared')
+                          ->whereHas('sharedUsers', function ($u) use ($userId) {
+                              $u->where('users.id', $userId);
+                          });
+                  });
+            });
+        }
+
 
         // filter kategori
         if ($request->category_id) {
@@ -30,9 +61,21 @@ class DocumentController extends Controller
             );
         }
 
-        $documents = $query
-            ->latest()
-            ->get();
+        $sort = $request->input('sort', 'tanggal');
+        $order = $request->input('order', 'desc') === 'asc' ? 'asc' : 'desc';
+
+        // sort: nama (abjad) atau tanggal (tanggal upload / updated_at)
+        if ($sort === 'nama') {
+            $documents = $query
+                ->orderBy('nama_dokumen', $order)
+                ->get();
+        } else {
+            // default tanggal
+            $documents = $query
+                ->orderBy('updated_at', $order)
+                ->get();
+        }
+
 
 
         $categories = Category::all();
@@ -48,6 +91,7 @@ class DocumentController extends Controller
 
     // upload dokumen
     public function store(Request $request)
+
     {
         $request->validate([
             'nama_dokumen' => 'required',
@@ -79,10 +123,11 @@ class DocumentController extends Controller
             'tanggal_upload' => now()->toDateString(),
             'category_id' => $request->category_id,
             'user_id' => $request->user()->id,
+            'visibility' => 'private',
             'file' => 'documents/' . $filename,
             'file_size' => $file->getSize(), // bytes
-            'deskripsi' => $request->deskripsi,
         ]);
+
 
 
         // log aktivitas
@@ -136,26 +181,61 @@ class DocumentController extends Controller
     // download dokumen
     public function download(Document $document)
     {
+        $document->load(['sharedUsers']);
+
+        if (!$this->currentIsAdmin()) {
+            $userId = $this->currentUserId();
+
+            $allowed = $document->visibility === 'public'
+                || $document->user_id === $userId
+                || ($document->visibility === 'shared' && $document->sharedUsers->contains('id', $userId));
+
+            abort_unless($allowed, 403);
+        }
+
         return Storage::disk('public')
             ->download($document->file);
     }
 
+
     public function show($id)
     {
-        $document = Document::with('category')->findOrFail($id);
+        $document = Document::with(['category', 'user', 'sharedUsers'])->findOrFail($id);
 
-        return view(
-            'document.show',
-            compact('document')
-        );
+        if (!$this->currentIsAdmin()) {
+            $userId = $this->currentUserId();
+
+            $allowed = $document->visibility === 'public'
+                || $document->user_id === $userId
+                || ($document->visibility === 'shared' && $document->sharedUsers->contains('id', $userId));
+
+            abort_unless($allowed, 403);
+        }
+
+        return view('document.show', compact('document'));
     }
+
 
     public function view(Document $document)
     {
+        // Pastikan relasi untuk cek permission
+        $document->load(['sharedUsers']);
+
+        if (!$this->currentIsAdmin()) {
+            $userId = $this->currentUserId();
+
+            $allowed = $document->visibility === 'public'
+                || $document->user_id === $userId
+                || ($document->visibility === 'shared' && $document->sharedUsers->contains('id', $userId));
+
+            abort_unless($allowed, 403);
+        }
+
         $filePath = storage_path('app/public/' . $document->file);
 
         return response()->file($filePath);
     }
+
 
     public function trash()
     {

@@ -134,8 +134,9 @@
                 </a>
 
                 <!-- Preview -->
-                <a href="{{ route('document.view', $document->id) }}"
+<a href="{{ route('document.view', $document->id) }}"
                    target="_blank"
+                   rel="noopener noreferrer"
                    class="btn btn-primary rounded-4 px-5 py-3 fw-semibold fs-5 shadow-sm">
 
                     👁️ Lihat Dokumen

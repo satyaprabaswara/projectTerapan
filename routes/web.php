@@ -45,10 +45,10 @@ Route::resource(
     CategoryController::class
 );
 
-Route::get(
-    '/document/{id}',
-    [DocumentController::class, 'show']
-)->name('document.show');
+// NOTE: Route resource('document', ...) sudah menyediakan DocumentController@show untuk '/document/{document}'
+// sehingga definisi tambahan '/document/{id}' dihapus agar tidak terjadi konflik route name.
+
+
 
 Route::get(
     '/document/view/{document}',

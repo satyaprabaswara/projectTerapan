@@ -3,6 +3,117 @@
             font-family:'Segoe UI',sans-serif;
         }
 
+        .header-link{
+            color:white !important;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .header-link:hover{
+            color:#cbd5e1 !important;
+        }
+
+        /* HEADER TABLE */
+        .table thead{
+            background:#f8fafc !important;
+        }
+
+        .table thead th{
+            background:#f8fafc !important;
+            color:#334155 !important;
+            font-size:18px;
+            font-weight:700;
+            border:none;
+            padding:22px 20px;
+            text-align:left !important;
+        }
+
+        /* Link Header Sort */
+        .header-link{
+            color:#334155 !important;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        .header-link:hover{
+            color:#2563eb !important;
+        }
+
+        /* Isi tabel */
+        .table tbody td{
+            padding:26px 20px;
+            font-size:16px;
+            color:#1e293b;
+            border-bottom:1px solid #e5e7eb;
+        }
+
+        /* Nama dokumen */
+        .document-name{
+            font-size:16px;
+            font-weight:600;
+            color:#1e293b;
+        }
+
+        /* Pemilik */
+        .owner-name{
+            font-weight:500;
+            color:#334155;
+        }
+
+        /* Tanggal */
+        .document-date{
+            color:#334155;
+            font-weight:500;
+        }
+
+        /* Ukuran file */
+        .document-size{
+            color:#475569;
+        }
+        .file-icon{
+            width:42px;
+            height:42px;
+            border-radius:12px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:20px;
+            margin-right:12px;
+
+            flex-shrink:0;
+        }
+
+        .file-pdf{
+            background:#fee2e2;
+            color:#dc2626;
+        }
+
+        .file-doc{
+            background:#dbeafe;
+            color:#2563eb;
+        }
+
+        .file-xls{
+            background:#dcfce7;
+            color:#16a34a;
+        }
+
+        .file-img{
+            background:#f3e8ff;
+            color:#9333ea;
+        }
+
+        .file-default{
+            background:#f1f5f9;
+            color:#475569;
+        }
+
+        .document-cell{
+            display:flex;
+            align-items:center;
+        }
 
         .page-title{
             font-size:36px;
@@ -303,16 +414,60 @@
         <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Dokumen</th>
-                            <th>Kategori</th>
-                            <th>Pemilik</th>
-                            <th>Tanggal Diubah</th>
-                            <th>Ukuran File</th>
-                            <th>Aksi</th>
-                        </tr>
+                <thead>
+                    <tr>
+
+                        <th class="text-start">
+                            <a href="{{ route('document.index', array_merge(
+                                request()->except('sort','order'),
+                                [
+                                    'sort'=>'nama',
+                                    'order'=>(request('sort')=='nama' && request('order')=='asc')
+                                        ? 'desc'
+                                        : 'asc'
+                                ]
+                            )) }}"
+                            class="header-link">
+
+                                Nama Dokumen
+
+                            </a>
+                        </th>
+
+                        <th class="text-center">
+                            Kategori
+                        </th>
+
+                        <th class="text-center">
+                            Pemilik
+                        </th>
+
+                        <th class="text-center">
+                            <a href="{{ route('document.index', array_merge(
+                                request()->except('sort','order'),
+                                [
+                                    'sort'=>'tanggal',
+                                    'order'=>(request('sort')=='tanggal' && request('order')=='asc')
+                                        ? 'desc'
+                                        : 'asc'
+                                ]
+                            )) }}"
+                            class="header-link">
+
+                                Tanggal Diubah
+
+                            </a>
+                        </th>
+
+                        <th class="text-center">
+                            Ukuran File
+                        </th>
+
+                        <th class="text-center">
+                            Aksi
+                        </th>
+
+                    </tr>
                     </thead>
 
                     <tbody>
@@ -325,18 +480,59 @@
 
                     <tr>
 
-                        <td class="text-center fw-bold">
-                            {{ $index + 1 }}
-                        </td>
+                        <td>
 
-                        <td class="fw-semibold">
-                            <a
-                                href="{{ route('document.show', $d->id) }}"
-                                class="text-decoration-none fw-semibold text-dark">
+                            @php
 
-                                {{ $d->nama_dokumen }}
+                                $ext = strtolower(
+                                    pathinfo($d->file ?? '', PATHINFO_EXTENSION)
+                                );
 
-                            </a>
+                                $iconClass = 'bi-file-earmark';
+                                $colorClass = 'file-default';
+
+                                if($ext == 'pdf'){
+                                    $iconClass = 'bi-file-earmark-pdf-fill';
+                                    $colorClass = 'file-pdf';
+                                }
+
+                                elseif(in_array($ext,['doc','docx'])){
+                                    $iconClass = 'bi-file-earmark-word-fill';
+                                    $colorClass = 'file-doc';
+                                }
+
+                                elseif(in_array($ext,['xls','xlsx'])){
+                                    $iconClass = 'bi-file-earmark-excel-fill';
+                                    $colorClass = 'file-xls';
+                                }
+
+                                elseif(in_array($ext,['png','jpg','jpeg','gif'])){
+                                    $iconClass = 'bi-image-fill';
+                                    $colorClass = 'file-img';
+                                }
+
+                            @endphp
+
+                            <div class="document-cell">
+
+                                <div class="file-icon {{ $colorClass }}">
+                                    <i class="bi {{ $iconClass }}"></i>
+                                </div>
+
+                                <div>
+
+                                    <a
+                                        href="{{ route('document.show',$d->id) }}"
+                                        class="text-decoration-none fw-semibold text-dark">
+
+                                        {{ $d->nama_dokumen }}
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
                         </td>
 
                         <td class="text-center">
@@ -355,10 +551,12 @@
 
                         <td class="text-center">
                             @php
-                                $bytes = $d->file_size;
+                                $bytes = $d->file_size ?? null;
+
                                 if ($bytes === null) {
                                     $display = '-';
                                 } else {
+                                    $bytes = (float) $bytes;
                                     $kb = $bytes / 1024;
                                     $mb = $kb / 1024;
 
@@ -373,6 +571,7 @@
                             {{ $display }}
                         </td>
 
+
                         <td class="text-center">
                             <div class="dropdown">
                                 <button
@@ -385,12 +584,13 @@
 
                                 <ul class="dropdown-menu dropdown-menu-end">
 
-                                    <!-- LIHAT DOKUMEN -->
+<!-- LIHAT DOKUMEN -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="{{ route('document.view', $d->id) }}"
-                                            target="_blank">
+                                            target="_blank"
+                                            rel="noopener noreferrer">
 
                                             👁️ Lihat Dokumen
 
@@ -408,29 +608,24 @@
                                         </a>
                                     </li>
 
-                                    <!-- GANTI NAMA -->
+<!-- GANTI NAMA (Belum tersedia) -->
                                     <li>
-                                        <a
-                                            class="dropdown-item"
-                                            href="#"
-                                            onclick="alert('Fitur ganti nama belum diimplementasi'); return false;">
-
+                                        <span
+                                            class="dropdown-item text-muted"
+                                            aria-disabled="true">
                                             ✏️ Ganti Nama
-
-                                        </a>
+                                        </span>
                                     </li>
 
-                                    <!-- BUAT SALINAN -->
+                                    <!-- BUAT SALINAN (Belum tersedia) -->
                                     <li>
-                                        <a
-                                            class="dropdown-item"
-                                            href="#"
-                                            onclick="alert('Fitur buat salinan belum diimplementasi'); return false;">
-
+                                        <span
+                                            class="dropdown-item text-muted"
+                                            aria-disabled="true">
                                             📄 Buat Salinan
-
-                                        </a>
+                                        </span>
                                     </li>
+
 
                                     <!-- INFORMASI FILE -->
                                     <li>
@@ -642,27 +837,7 @@
 <!-- Bootstrap JS sudah dimuat di layouts/app.blade.php -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Prevent Bootstrap modal from stealing focus in a way that blocks dropdown interaction
-    const uploadModalEl = document.getElementById('uploadModal');
-    if (uploadModalEl) {
-        uploadModalEl.addEventListener('shown.bs.modal', () => {
-            const closeBtn = uploadModalEl.querySelector('[data-bs-dismiss="modal"]');
-            if (closeBtn) closeBtn.focus();
-        });
-    }
-
-    // Re-initialize Bootstrap dropdowns
-    const dropdownToggles = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-    dropdownToggles.forEach((el) => {
-        try {
-            // eslint-disable-next-line no-new
-            new bootstrap.Dropdown(el);
-        } catch (e) {
-            // ignore
-        }
-    });
-
+    // Update file name in upload modal
     const input = document.getElementById('fileInput');
     const fileNameEl = document.getElementById('file-name');
 

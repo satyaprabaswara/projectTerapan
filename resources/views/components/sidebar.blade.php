@@ -1,11 +1,14 @@
 <style>
-    .sidebar {
+/* Sticky sidebar butuh kontainer utama tidak mengganggu sticky */
+.sidebar {
         width: 240px;
         min-height: 100vh;
         background: #ffffff;
         border-right: 1px solid #e5e7eb;
         position: sticky;
-        top: 0;
+        top: 70px; /* offset dari navbar */
+        z-index: 20;
+        height: calc(100vh - 70px);
     }
 
     .sidebar-logo {
