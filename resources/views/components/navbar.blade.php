@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm"
+<nav class="navbar bg-white border-bottom shadow-sm"
      style="height:70px;">
 
-    <div class="container-fluid">
+    <div class="container-fluid px-2 px-lg-3">
 
         <!-- Logo -->
 <div class="d-flex align-items-center">
@@ -22,7 +22,7 @@
             PT SPR Langgak
         </h5>
 
-        <small class="text-muted"
+        <small class="text-muted d-none d-md-inline"
                style="font-size:16px;">
             Sistem Dokumentasi Digitalisasi Divisi Finance
         </small>
@@ -31,7 +31,11 @@
 
 </div>
         <!-- User -->
+<<<<<<< HEAD
     <div class="d-flex align-items-center">
+=======
+        <div class="d-flex align-items-center justify-content-end flex-grow-1">
+>>>>>>> f53f835be9a73ce79035691a3e6507e7ba109e75
 
         <div
             class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
@@ -45,12 +49,26 @@
 
                 <div class="dropdown">
 
+<<<<<<< HEAD
                     <button
                         class="btn btn-link p-0 text-decoration-none text-dark fw-semibold dropdown-toggle"
                         type="button"
                         id="profileDropdown"
                         data-bs-toggle="dropdown"
                         aria-expanded="false">
+=======
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="z-index:2000;">
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}" class="d-none" id="logout-form">
+                                    @csrf
+                                </form>
+                                <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    🚪 Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+>>>>>>> f53f835be9a73ce79035691a3e6507e7ba109e75
 
                         {{ Auth::user()?->name ?? 'Admin' }}
 

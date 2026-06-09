@@ -2,18 +2,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="flex min-h-screen bg-gray-100">
+<div class="min-h-screen bg-gray-100">
 
-    <!-- SIDEBAR -->
-        @include('components.sidebar')
+    <div class="d-flex flex-column flex-lg-row">
 
-    <!-- CONTENT -->
-    <main class="flex-1">
+        <!-- SIDEBAR (responsive) -->
+        <div class="d-none d-lg-block">
+            @include('components.sidebar')
+        </div>
 
-    <div class="p-6">
+        <!-- CONTENT -->
+        <main class="flex-1 w-100">
 
+<<<<<<< HEAD
        <!-- CARD STATISTIK -->
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
+=======
+            <div class="p-6">
+
+                <!-- CARD STATISTIK (diperkecil) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
+>>>>>>> f53f835be9a73ce79035691a3e6507e7ba109e75
 
         <!-- Total Dokumen -->
         <div
