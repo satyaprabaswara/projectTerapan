@@ -60,4 +60,19 @@ Route::get('/settings', function () {
     return view('settings.index');
 })->name('settings');
 
+Route::get(
+    '/documents/trash',
+    [DocumentController::class, 'trash']
+)->name('document.trash');
+
+Route::put(
+    '/documents/{id}/restore',
+    [DocumentController::class, 'restore']
+)->name('document.restore');
+
+Route::delete(
+    '/documents/{id}/force-delete',
+    [DocumentController::class, 'forceDelete']
+)->name('document.forceDelete');
+
 require __DIR__.'/auth.php';

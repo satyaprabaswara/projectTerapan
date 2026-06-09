@@ -99,5 +99,10 @@
            class="sidebar-menu {{ request()->routeIs('activity.logs') ? 'active' : '' }}">
             📝 Log Aktivitas
         </a>
+
+        <a href="{{ route('document.trash') }}"
+            class="sidebar-menu">
+                🗑️ Sampah
+        </a>
     </nav>
 </aside>

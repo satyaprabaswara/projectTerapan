@@ -23,11 +23,11 @@ class ActivityLog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function document(): BelongsTo
+    public function document()
     {
         return $this->belongsTo(
-            Document::class,
+            \App\Models\Document::class,
             'subject_id'
-        );
+        )->withTrashed();
     }
 }

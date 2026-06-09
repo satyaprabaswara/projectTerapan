@@ -110,10 +110,9 @@ class DocumentController extends Controller
     // hapus dokumen
     public function destroy(Document $document)
     {
-        Storage::disk('public')
-            ->delete($document->file);
-
         $documentName = $document->nama_dokumen;
+
+        // soft delete saja
         $document->delete();
 
         ActivityLog::create([
@@ -156,5 +155,42 @@ class DocumentController extends Controller
         $filePath = storage_path('app/public/' . $document->file);
 
         return response()->file($filePath);
+    }
+
+    public function trash()
+    {
+        $documents = Document::onlyTrashed()
+            ->latest()
+            ->get();
+
+        return view(
+            'document.trash',
+            compact('documents')
+        );
+    }
+
+    public function restore($id)
+    {
+        $document = Document::onlyTrashed()->findOrFail($id);
+
+        $document->restore();
+
+        return redirect()
+            ->route('document.trash')
+            ->with('success', 'Dokumen berhasil direstore');
+    }
+
+    public function forceDelete($id)
+    {
+        $document = Document::onlyTrashed()->findOrFail($id);
+
+        Storage::disk('public')
+            ->delete($document->file);
+
+        $document->forceDelete();
+
+        return redirect()
+            ->route('document.trash')
+            ->with('success', 'Dokumen dihapus permanen');
     }
 }
