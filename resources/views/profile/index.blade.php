@@ -114,13 +114,10 @@
 
                 <div class="card info-card">
 
-                    <!-- HEADER -->
                     <div class="profile-header">
 
                         <div class="profile-avatar">
-
                             {{ strtoupper(substr(Auth::user()->name ?? 'A',0,1)) }}
-
                         </div>
 
                         <div class="profile-name">
@@ -130,14 +127,13 @@
                             </h2>
 
                             <p class="text-muted mb-0">
-                                Administrator Sistem
+                                {{ ucfirst(Auth::user()->role) }}
                             </p>
 
                         </div>
 
                     </div>
 
-                    <!-- BODY -->
                     <div class="card-body p-5">
 
                         <div class="row mb-4">
@@ -146,7 +142,9 @@
 
                                 <div class="stat-box">
 
-                                    <h4>Admin</h4>
+                                    <h4>
+                                        {{ ucfirst(Auth::user()->role) }}
+                                    </h4>
 
                                     <small>Role</small>
 
@@ -227,7 +225,7 @@
                                 <input
                                     type="text"
                                     class="form-control"
-                                    value="Administrator"
+                                    value="{{ ucfirst(Auth::user()->role) }}"
                                     readonly>
 
                             </div>
@@ -250,11 +248,10 @@
 
                         <div class="text-end mt-4">
 
-                            <a href="{{ route('dashboard') }}"
+                            <a href="{{ route('profile.edit') }}"
                                class="btn btn-primary">
 
-                                <i class="bi bi-house-door me-2"></i>
-                                Dashboard
+                                Edit Profile
 
                             </a>
 
