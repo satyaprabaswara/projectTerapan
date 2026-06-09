@@ -56,7 +56,6 @@
             Kelola Dokumen
         </a>
 
-<<<<<<< HEAD
         <a href="{{ route('categories.index') }}"
            class="sidebar-menu {{ request()->routeIs('categories.*') ? 'active' : '' }}">
             <i class="bi bi-file-earmark-text"></i>
@@ -68,22 +67,6 @@
             <i class="bi bi-people-fill"></i>
             Pengguna
         </a>
-=======
-        @php($role = Auth::user()?->role ?? '')
-
-        @if($role === 'admin')
-            <a href="{{ route('categories.index') }}"
-               class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('categories.*') ? 'bg-primary text-white' : 'text-dark' }}">
-                📂 Kategori
-            </a>
-
-            <a href="{{ route('users.index') }}"
-               class="d-block px-4 py-3 text-decoration-none {{ request()->routeIs('users.*') ? 'bg-primary text-white' : 'text-dark' }}">
-                👤 Pengguna
-            </a>
-        @endif
-
->>>>>>> f53f835be9a73ce79035691a3e6507e7ba109e75
 
         <a href="#"
            class="sidebar-menu">
@@ -96,9 +79,12 @@
 
             <button type="submit"
                     class="sidebar-menu logout-btn text-danger">
+
                 <i class="bi bi-box-arrow-right"></i>
                 Logout
+
             </button>
+
         </form>
 
     </nav>

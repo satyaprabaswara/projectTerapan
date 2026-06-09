@@ -14,15 +14,13 @@
         <!-- CONTENT -->
         <main class="flex-1 w-100">
 
-<<<<<<< HEAD
-       <!-- CARD STATISTIK -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
-=======
-            <div class="p-6">
+      <div class="p-4">
+
+    <!-- CARD STATISTIK -->
+    <div class="row g-3 mb-4">
 
                 <!-- CARD STATISTIK (diperkecil) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
->>>>>>> f53f835be9a73ce79035691a3e6507e7ba109e75
 
         <!-- Total Dokumen -->
         <div
