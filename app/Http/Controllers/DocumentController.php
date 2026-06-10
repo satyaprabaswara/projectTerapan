@@ -21,8 +21,17 @@ class DocumentController extends Controller
     private function currentIsAdmin(): bool
     {
         $user = Auth::user();
-        return $user && is_string($user->role) && strtolower($user->role) === 'admin';
+
+        if (!$user) {
+            return false;
+        }
+
+        $role = $user->role;
+
+        // robust: handle null/non-string, dan hilangkan whitespace
+        return trim(strtolower((string) $role)) === 'admin';
     }
+
 
     // halaman daftar dokumen
     public function index(Request $request)
@@ -364,4 +373,39 @@ class DocumentController extends Controller
 
         return back()->with('success', 'Akses berhasil dihapus');
     }
+
+    // Update (digunakan untuk fitur "Ganti Nama")
+    public function update(Request $request, Document $document)
+    {
+        $isOwner = (int) $document->user_id === (int) $this->currentUserId();
+        abort_unless($this->currentIsAdmin() || $isOwner, 403);
+
+        $request->validate([
+            'nama_dokumen' => 'required|string|max:255',
+        ]);
+
+        $oldName = $document->nama_dokumen;
+
+        $document->update([
+            'nama_dokumen' => $request->input('nama_dokumen'),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $this->currentUserId(),
+            'action' => 'document.renamed',
+            'description' => sprintf(
+                'Jam %s user %s mengganti nama dokumen dari "%s" menjadi "%s"',
+                now()->format('H:i'),
+                Auth::user()->name ?? Auth::user()->email ?? Auth::user()->id,
+                $oldName,
+                $document->nama_dokumen
+            ),
+            'subject_type' => Document::class,
+            'subject_id' => $document->id,
+        ]);
+
+        return redirect()->route('document.index')
+            ->with('success', 'Nama dokumen berhasil diperbarui');
+    }
 }
+

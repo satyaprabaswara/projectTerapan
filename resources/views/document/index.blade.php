@@ -316,6 +316,57 @@
             .d-flex.min-vh-100{ flex-direction: column; }
         }
 
+        /* Dropdown Modern */
+        .dropdown-menu{
+            border:none;
+            border-radius:16px;
+            padding:10px;
+            min-width:220px;
+            box-shadow:0 12px 30px rgba(0,0,0,.12);
+        }
+
+        .dropdown-item{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:10px 14px;
+            border-radius:10px;
+            font-weight:500;
+            color:#334155;
+        }
+
+        .dropdown-item:hover{
+            background:#f8fafc;
+            color:#0f172a;
+        }
+
+        .dropdown-item.text-danger:hover{
+            background:#fef2f2;
+        }
+
+        .action-btn{
+            width:38px;
+            height:38px;
+            border:none;
+            border-radius:12px;
+            background:#f8fafc;
+            color:#475569;
+            transition:.2s ease;
+        }
+
+        .action-btn:hover{
+            background:#e2e8f0;
+            color:#0f172a;
+        }
+
+        .action-btn::after{
+            display:none !important;
+        }
+
+        .dropdown-divider{
+            margin:.5rem 0;
+        }
+
         td a:hover{
             color:#2563eb !important;
             text-decoration:underline !important;
@@ -415,6 +466,8 @@
             <div class="table-responsive">
                 <table class="table align-middle">
                 <thead>
+                <link rel="stylesheet"
+                href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
                     <tr>
 
                         <th class="text-start">
@@ -575,18 +628,21 @@
 
 
                         <td class="text-center">
+
                             <div class="dropdown">
+
                                 <button
-                                    class="btn btn-light btn-sm dropdown-toggle"
+                                    class="action-btn"
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    ⋮
+
+                                    <i class="bi bi-three-dots"></i>
+
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-end">
 
-<!-- LIHAT DOKUMEN -->
                                     <li>
                                         <a
                                             class="dropdown-item"
@@ -594,64 +650,59 @@
                                             target="_blank"
                                             rel="noopener noreferrer">
 
-                                            👁️ Lihat Dokumen
+                                            <i class="bi bi-eye"></i>
+                                            <span>Lihat Dokumen</span>
 
                                         </a>
                                     </li>
 
-                                    <!-- DOWNLOAD -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="{{ route('document.download',$d->id) }}">
 
-                                            ⬇️ Download
+                                            <i class="bi bi-download"></i>
+                                            <span>Download</span>
 
                                         </a>
                                     </li>
 
-<!-- GANTI NAMA (Belum tersedia) -->
                                     <li>
-                                        <span
-                                            class="dropdown-item text-muted"
-                                            aria-disabled="true">
-                                            ✏️ Ganti Nama
-                                        </span>
-                                    </li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#renameModal"
+                                            data-doc-id="{{ $d->id }}"
+                                            data-doc-name="{{ $d->nama_dokumen }}">
 
-                                    <!-- BUAT SALINAN (Belum tersedia) -->
-                                    <li>
-                                        <span
-                                            class="dropdown-item text-muted"
-                                            aria-disabled="true">
-                                            📄 Buat Salinan
-                                        </span>
+                                            <i class="bi bi-pencil"></i>
+                                            <span>Ganti Nama</span>
+
+                                        </button>
                                     </li>
 
 
-                                    <!-- INFORMASI FILE -->
                                     <li>
                                         <a
                                             class="dropdown-item"
                                             href="#"
-                                            role="button"
                                             data-bs-toggle="offcanvas"
                                             data-bs-target="#infoCanvas"
-                                            aria-controls="infoCanvas"
                                             data-doc-id="{{ $d->id }}">
 
-                                            ℹ️ Informasi File
+                                            <i class="bi bi-info-circle"></i>
+                                            <span>Informasi File</span>
 
                                         </a>
                                     </li>
-
 
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
 
-                                    <!-- HAPUS -->
                                     <li>
+
                                         <form
                                             action="{{ route('document.destroy',$d->id) }}"
                                             method="POST"
@@ -665,15 +716,19 @@
                                                 onclick="return confirm('Yakin hapus dokumen?')"
                                                 class="dropdown-item text-danger">
 
-                                                🗑️ Hapus
+                                                <i class="bi bi-trash"></i>
+                                                <span>Hapus</span>
 
                                             </button>
 
                                         </form>
+
                                     </li>
 
                                 </ul>
+
                             </div>
+
                         </td>
 
 
@@ -730,8 +785,48 @@
     </div>
 </div>
 
+<!-- MODAL rename -->
+<div class="modal fade" id="renameModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content position-relative">
+            <button
+                type="button"
+                class="btn-close position-absolute top-0 end-0 m-4"
+                data-bs-dismiss="modal"></button>
+
+            <h1 class="fw-bold mb-2">✏️ Ganti Nama Dokumen</h1>
+            <p class="text-muted mb-4">Perbarui nama dokumen yang dipilih.</p>
+
+            <form
+                method="POST"
+                id="renameForm">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-4">
+                    <label class="fw-semibold mb-2">Nama Dokumen</label>
+                    <input
+                        type="text"
+                        name="nama_dokumen"
+                        id="renameInput"
+                        class="form-control form-control-lg rounded-4"
+                        required
+                        maxlength="255">
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-submit mt-2 text-white w-100">
+                    Simpan
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal fade" id="uploadModal" tabindex="-1">
+
 
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content position-relative">
@@ -756,31 +851,18 @@
                 action="{{ route('document.store') }}"
                 method="POST"
                 enctype="multipart/form-data">
-
                 @csrf
-
-                <!-- Nama Dokumen -->
-                <div class="mb-4">
-                    <label class="fw-semibold mb-2">
-                        Nama Dokumen
-                    </label>
-
-                    <input
-                        type="text"
-                        name="nama_dokumen"
-                        class="form-control form-control-lg rounded-4"
-                        placeholder="Masukkan nama dokumen..."
-                        required>
-
-                </div>
+                <input
+                    type="hidden"
+                    name="nama_dokumen"
+                    id="uploadNamaDokumen">
 
 
-
-                <!-- Kategori -->
                 <div class="mb-4">
                     <label class="fw-semibold mb-2">
                         Kategori Dokumen
                     </label>
+
 
                     <select
                         name="category_id"
@@ -874,247 +956,253 @@
 
 <!-- Bootstrap JS sudah dimuat di layouts/app.blade.php -->
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
 
-    // Offcanvas info dokumen
-    const infoCanvasBody = document.getElementById('infoCanvasBody');
-    const infoCanvas = document.getElementById('infoCanvas');
+    const renameModalEl = document.getElementById('renameModal');
+    const renameInputEl = document.getElementById('renameInput');
+    const renameFormEl = document.getElementById('renameForm');
 
-    if (infoCanvas && infoCanvasBody) {
-        infoCanvas.addEventListener('shown.bs.offcanvas', (event) => {
-            const trigger = event.relatedTarget;
-            const docId = trigger?.getAttribute('data-doc-id');
+    if (renameModalEl && renameInputEl && renameFormEl) {
+        document.querySelectorAll('[data-bs-target="#renameModal"]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const docId = this.getAttribute('data-doc-id');
+                const docName = this.getAttribute('data-doc-name') || '';
 
-            infoCanvasBody.innerHTML = 'Memuat informasi dokumen...';
-
-            if (!docId) {
-                infoCanvasBody.innerHTML = 'Dokumen tidak ditemukan.';
-                return;
-            }
-
-            // DEBUG: cetak docId yang terbaca dari trigger
-            console.log('[infoCanvas] docId=', docId);
-
-            fetch(`/document/${docId}`)
-                .then((res) => {
-                    if (!res.ok) throw new Error('Gagal memuat');
-                    return res.text();
-                })
-                .then((html) => {
-                    const container = document.createElement('div');
-                    container.innerHTML = html;
+                renameInputEl.value = docName;
+                renameFormEl.setAttribute('action', `/document/${docId}`);
+            });
+        });
+    }
 
 
-                    const card = container.querySelector('.bg-white.rounded-5');
-                    if (!card) {
-                        infoCanvasBody.innerHTML = '<div class="text-muted">Informasi tidak tersedia.</div>';
-                        return;
-                    }
 
-                    const nama = (card.querySelector('h2')?.textContent || '').trim();
-                    const strongNodes = Array.from(card.querySelectorAll('strong'));
+    const infoCanvasBody =
+        document.getElementById('infoCanvasBody');
 
-                    const getAfterStrong = (label) => {
-                        const node = strongNodes.find((s) => s.textContent.trim().toLowerCase() === label);
-                        if (!node) return '';
-                        return (node.parentElement?.textContent || '').replace(node.textContent, '').trim();
-                    };
+    document.querySelectorAll('[data-doc-id]')
+        .forEach(button => {
 
-                    const kategoriNode = strongNodes.find((s) => s.textContent.trim().toLowerCase() === 'kategori:');
-                    const kategori = kategoriNode
-                        ? (kategoriNode.parentElement?.textContent || '').replace(kategoriNode.textContent, '').trim()
-                        : '';
+            button.addEventListener('click', function () {
 
-                    const tanggalUpload = getAfterStrong('tanggal upload:');
-                    const pemilik = getAfterStrong('pemilik:');
-                    const ukuran = getAfterStrong('ukuran file:');
+                const docId =
+                    this.dataset.docId;
 
-                    // Tentukan jenis file dari extension yang ada di file path pada response show.
-                    // Ambil extension dari path file yang (di show) tersimpan di model.
-                    // Karena view show tidak menampilkan file path secara eksplisit, kita fallback pakai teks total.
-                    const fileText = (card.textContent || '').toLowerCase();
-                    // fallback: ambil ekstensi dari teks yang mungkin berisi nama file/path
-                    const extMatch = fileText.match(/\.(pdf|docx?|xls[x]?|png|jpe?g|gif)(?![a-z0-9])/);
-                    const ext = extMatch ? extMatch[1].toLowerCase().replace('jpeg','jpg') : '';
+                infoCanvasBody.innerHTML =
+                    'Memuat informasi dokumen...';
 
-                    const jenisFile = ext === 'pdf'
-                        ? 'PDF'
-                        : (ext === 'doc' || ext === 'docx')
-                            ? 'Word'
-                            : (ext === 'xls' || ext === 'xlsx')
-                                ? 'Excel'
-                                : (ext === 'png' || ext === 'jpg' || ext === 'gif')
-                                    ? 'Gambar'
-                                    : '-';
+                fetch(`/document/${docId}`)
+                    .then(response => response.text())
+                    .then(html => {
 
-                    // UI akses: tampilkan form kelola akses + daftar shared users
-                    const tampilkan = `
-                        <div class="p-1">
-                            <script type="application/json" id="__doc_id__">${docId}</script>
-                            <div class="mb-3">
-                                <div style="font-size: 42px; font-weight: 700; color:#0f172a; line-height:1.1;">${nama || '-'}</div>
-                                <div class="text-muted">${kategori ? 'Kategori: ' + kategori : 'Kategori: -'}</div>
-                            </div>
+                        const parser =
+                            new DOMParser();
 
-                            <div class="bg-light border rounded-4 p-3 mb-4">
-                                <div class="fw-bold mb-1">Ringkasan</div>
-                                <div class="d-flex justify-content-between gap-3">
+                        const doc =
+                            parser.parseFromString(
+                                html,
+                                'text/html'
+                            );
+
+                        const nama =
+                            doc.querySelector('h2')
+                            ?.textContent.trim() ?? '-';
+
+                        let kategori = '-';
+                        let tanggal = '-';
+                        let ukuran = '-';
+                        let pemilik = '-';
+
+                        doc.querySelectorAll('strong')
+                            .forEach(item => {
+
+                                const label =
+                                    item.textContent.trim();
+
+                                const value =
+                                    item.parentElement.textContent
+                                        .replace(label,'')
+                                        .trim();
+
+                                if(label.includes('Kategori')){
+                                    kategori = value;
+                                }
+
+                                if(label.includes('Tanggal Upload')){
+                                    tanggal = value;
+                                }
+
+                                if(label.includes('Ukuran File')){
+                                    ukuran = value;
+                                }
+
+                                if(label.includes('Pemilik')){
+                                    pemilik = value;
+                                }
+                            });
+
+                        // Render tampilan mengikuti urutan gdrive (Ringkasan -> Akses -> Detail File -> Keterangan -> Buka Detail -> Daftar Akses)
+                        infoCanvasBody.innerHTML = `
+                            <div class="p-1">
+                                <div class="mb-3">
+                                    <div style="font-size: 42px; font-weight: 700; color:#0f172a; line-height:1.1;">${nama || '-'}</div>
+                                    <div class="text-muted">${kategori ? 'Kategori: ' + kategori : 'Kategori: -'}</div>
+                                </div>
+
+                                <div class="bg-light border rounded-4 p-3 mb-4">
+                                    <div class="fw-bold mb-1">Ringkasan</div>
+                                    <div class="d-flex justify-content-between gap-3">
+                                        <div class="text-muted">Pemilik</div>
+                                        <div class="fw-semibold">${pemilik || '-'}</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between gap-3">
+                                        <div class="text-muted">Tanggal upload</div>
+                                        <div class="fw-semibold">${tanggal || '-'}</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between gap-3">
+                                        <div class="text-muted">Ukuran</div>
+                                        <div class="fw-semibold">${ukuran || '-'}</div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4" />
+                                <h6 class="fw-bold mb-3">Akses</h6>
+                                <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
+                                <div class="mb-3" id="accessList"></div>
+
+                                <hr class="my-4" />
+                                <h6 class="fw-bold mb-3">Detail File</h6>
+
+                                <div class="d-flex justify-content-between gap-3 mb-2">
+                                    <div class="text-muted">Jenis file</div>
+                                    <div class="fw-semibold">-</div>
+                                </div>
+                                <div class="d-flex justify-content-between gap-3 mb-2">
+                                    <div class="text-muted">Ukuran</div>
+                                    <div class="fw-semibold">${ukuran || '-'}</div>
+                                </div>
+                                <div class="d-flex justify-content-between gap-3 mb-2">
                                     <div class="text-muted">Pemilik</div>
                                     <div class="fw-semibold">${pemilik || '-'}</div>
                                 </div>
                                 <div class="d-flex justify-content-between gap-3">
-                                    <div class="text-muted">Tanggal upload</div>
-                                    <div class="fw-semibold">${tanggalUpload || '-'}</div>
+                                    <div class="text-muted">Terakhir dimodifikasi</div>
+                                    <div class="fw-semibold">${tanggal || '-'}</div>
                                 </div>
-                                <div class="d-flex justify-content-between gap-3">
-                                    <div class="text-muted">Ukuran</div>
-                                    <div class="fw-semibold">${ukuran || '-'}</div>
-                                </div>
-                            </div>
 
-                            <hr class="my-4" />
-                            <h6 class="fw-bold mb-3">Akses</h6>
-                            <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
-                            <div class="mb-3" id="accessList"></div>
-
-                            <div class="mt-3" id="accessManage" style="display:none;">
-                                <div class="text-muted mb-2">Kelola akses (owner/admin)</div>
-
-                                <form method="POST" action="{{ route('document.shares.store', $d->id ?? '__DOCID__') }}" id="shareForm" class="d-flex gap-2 flex-wrap">
-                                    @csrf
-                                    <input type="hidden" name="email" id="shareEmailInput" />
-                                    <div class="flex-grow-1" style="min-width: 220px;">
-                                        <input
-                                            type="email"
-                                            class="form-control"
-                                            placeholder="Masukkan email user..."
-                                            id="shareEmail"
-                                            name="email"
-                                            required
-                                            {{ auth()->check() ? '' : 'disabled' }}>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Tambah</button>
-                                </form>
-                            </div>
-
-                            <hr class="my-4" />
-                            <h6 class="fw-bold mb-3">Detail File</h6>
-
-                            <div class="d-flex justify-content-between gap-3 mb-2">
-                                <div class="text-muted">Jenis file</div>
-                                <div class="fw-semibold">${jenisFile}</div>
-                            </div>
-                            <div class="d-flex justify-content-between gap-3 mb-2">
-                                <div class="text-muted">Ukuran</div>
-                                <div class="fw-semibold">${ukuran || '-'}</div>
-                            </div>
-                            <div class="d-flex justify-content-between gap-3 mb-2">
-                                <div class="text-muted">Pemilik</div>
-                                <div class="fw-semibold">${pemilik || '-'}</div>
-                            </div>
-                            <div class="d-flex justify-content-between gap-3">
-                                <div class="text-muted">Terakhir dimodifikasi</div>
-                                <div class="fw-semibold">${tanggalUpload || '-'}</div>
-                            </div>
-
-                            <hr class="my-4" />
-                            <div class="fw-bold mb-2">Keterangan</div>
-                            <div class="text-muted">${(card.querySelector('.bg-light.border')?.textContent || card.textContent || '').trim().slice(0, 250)}...</div>
-
-                            <div class="mt-4">
-                                <a class="btn btn-primary w-100" href="{{ route('document.show', '__DOCID__') }}" target="_blank">Buka Detail</a>
-                            </div>
-
-                            <div class="mt-4">
                                 <hr class="my-4" />
-                                <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
-                                <div class="text-muted mb-3" id="accessTableLoading">Memuat daftar akses...</div>
-                                <div id="accessTable" class="d-flex flex-column gap-2"></div>
+                                <div class="fw-bold mb-2">Keterangan</div>
+                                <div class="text-muted">${doc.querySelector('.bg-light.border')?.textContent?.trim() || doc.body.textContent.trim().slice(0,250)}...</div>
+
+                                <div class="mt-4">
+                                    <a class="btn btn-primary w-100" href="{{ route('document.show', '__DOCID__') }}" target="_blank">Buka Detail</a>
+                                </div>
+
+                                <div class="mt-4">
+                                    <hr class="my-4" />
+                                    <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
+                                    <div class="text-muted mb-3" id="accessTableLoading">Memuat daftar akses...</div>
+                                    <div id="accessTable" class="d-flex flex-column gap-2"></div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
 
-                    infoCanvasBody.innerHTML = tampilkan;
+                        // NOTE: backend shares/list akan ditampilkan di akses (jika endpoint aktif)
+                        const accessListEl = infoCanvasBody.querySelector('#accessList');
+                        if (accessListEl) {
+                            accessListEl.innerHTML = '<div class="text-muted">Memuat daftar akses...</div>';
+                        }
 
-                    // render daftar akses (sharedUsers) via backend
-                    try {
-                        const docIdEl = container.querySelector('#__doc_id__');
-                        const activeDocId = (docIdEl && docIdEl.textContent) ? docIdEl.textContent.trim() : docId;
 
-                        // owner/admin bisa kelola
-                        const isOwner = Number('{{ auth()->check() ? ($d ?? null) : 0 }}') === 0; // placeholder, akan di-set lewat backend
-
-                        // fetch data shares JSON (relasi sharedUsers) dari backend
-                        fetch(`/documents/${activeDocId}/shares/list`)
+                        // Ambil akses shared via JSON endpoint
+                        fetch(`/documents/${docId}/shares/list`)
                             .then((r) => {
                                 if (!r.ok) throw new Error('fetch shares failed');
                                 return r.json();
                             })
                             .then((data) => {
-                                const accessList = infoCanvasBody.querySelector('#accessList');
                                 const loading = infoCanvasBody.querySelector('#accessLoading, #accessTableLoading');
                                 if (loading) loading.remove();
 
-                                if (!accessList) return;
-
-                                const isOwnerOrAdmin = !!data.canManage;
-                                const manageBox = infoCanvasBody.querySelector('#accessManage');
-                                if (manageBox) manageBox.style.display = isOwnerOrAdmin ? '' : 'none';
-
                                 const users = Array.isArray(data.users) ? data.users : [];
+                                const accessTable = infoCanvasBody.querySelector('#accessTable');
+
+                                if (!accessListEl) return;
 
                                 if (users.length === 0) {
-                                    accessList.innerHTML = '<div class="text-muted">Belum ada akses.</div>';
+                                    accessListEl.innerHTML = '<div class="text-muted">Belum ada akses.</div>';
+                                    if (accessTable) accessTable.innerHTML = '';
                                     return;
                                 }
 
-                                accessList.innerHTML = '';
+                                accessListEl.innerHTML = '';
+                                if (accessTable) accessTable.innerHTML = '';
+
+                                // owner/admin bisa kelola akses
+                                const canManage = !!data.canManage;
 
                                 users.forEach((u) => {
-                                    accessList.innerHTML += `
-                                        <div class="d-flex align-items-center justify-content-between gap-2 border rounded-3 p-2">
-                                            <div>
-                                                <div class="fw-semibold">${u.name || '-'}</div>
-                                                <div class="text-muted" style="font-size: 13px;">${u.email || '-'}</div>
-                                            </div>
-                                            ${data.canManage ? `
-                                                <form method="POST" action="${u.removeUrl}" class="m-0">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus akses user ini?')">Hapus</button>
-                                                </form>
-                                            ` : ''}
+                                    const item = document.createElement('div');
+                                    item.className = 'd-flex align-items-center justify-content-between gap-2 border rounded-3 p-2';
+                                    item.innerHTML = `
+                                        <div>
+<div class="fw-semibold">${u.name || '-'} </div>
+                                            <div class="text-muted" style="font-size: 13px;">${u.email || '-'}</div>
                                         </div>
                                     `;
+
+                                    accessListEl.appendChild(item);
+
+                                    if (accessTable) {
+                                        accessTable.appendChild(item.cloneNode(true));
+                                    }
                                 });
                             })
                             .catch(() => {
                                 const accessList = infoCanvasBody.querySelector('#accessList');
                                 if (accessList) accessList.innerHTML = '<div class="text-muted">Gagal memuat daftar akses.</div>';
                             });
-                    } catch (e) {}
-                })
-                })
-                .catch(() => {
-                    infoCanvasBody.innerHTML = 'Gagal memuat informasi dokumen.';
-                });
+                    })
+                    .catch(error => {
+
+                        console.error(error);
+
+                        infoCanvasBody.innerHTML =
+                            '<div class="text-danger">Gagal memuat informasi dokumen.</div>';
+                    });
+
+            });
+
         });
+
+    const input =
+        document.getElementById('fileInput');
+
+    const fileNameEl =
+        document.getElementById('file-name');
+
+    if(input && fileNameEl){
+
+        input.addEventListener('change', function(){
+
+            const fileName =
+                this.files.length
+                    ? this.files[0].name
+                    : 'Belum ada file dipilih';
+
+            fileNameEl.innerText = fileName;
+
+            // isi nama dokumen mengikuti nama file (tanpa ekstensi)
+            const uploadNameInput = document.querySelector('#uploadModal input[name="nama_dokumen"]');
+            if (uploadNameInput && fileName && fileName !== 'Belum ada file dipilih') {
+                // nama_dokumen tetap ikut nama file asli (termasuk ekstensi)
+                uploadNameInput.value = fileName;
+
+            }
+
+        });
+
     }
 
-    // Update file name in upload modal
-    const input = document.getElementById('fileInput');
-    const fileNameEl = document.getElementById('file-name');
-
-
-    if (!input || !fileNameEl) return;
-
-    input.addEventListener('change', function () {
-        const fileName = this.files && this.files.length
-            ? this.files[0].name
-            : 'Belum ada file dipilih';
-
-        fileNameEl.innerText = fileName;
-    });
 });
 </script>
 
