@@ -273,4 +273,95 @@ class DocumentController extends Controller
             ->route('document.trash')
             ->with('success', 'Dokumen dihapus permanen');
     }
+
+    // Share akses dokumen (owner/admin)
+    public function sharesListJson(Document $document)
+    {
+        $document->load('sharedUsers');
+
+        if (!$this->currentIsAdmin()) {
+            $userId = $this->currentUserId();
+            $allowed = $document->visibility === 'public'
+                || $document->user_id === $userId
+                || ($document->visibility === 'shared' && $document->sharedUsers->contains('id', $userId));
+
+            abort_unless($allowed, 403);
+        }
+
+        $canManage = $this->currentIsAdmin() || (int) $document->user_id === (int) $this->currentUserId();
+
+        return response()->json([
+            'canManage' => $canManage,
+            'users' => $document->sharedUsers->map(fn ($u) => [
+                'id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'removeUrl' => route('document.shares.destroy', ['document' => $document->id, 'user' => $u->id]),
+            ])->values(),
+        ]);
+    }
+
+    public function shareStore(Request $request, Document $document)
+    {
+
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = $request->input('email');
+        $targetUser = \App\Models\User::where('email', $user)->first();
+
+        abort_unless($targetUser, 404);
+
+        // owner/admin policy
+        $isOwner = (int) $document->user_id === (int) $this->currentUserId();
+        abort_unless($this->currentIsAdmin() || $isOwner, 403);
+
+        // idempotent: unique(document_id,user_id) di DB
+        $created = false;
+
+        $document->load('sharedUsers');
+
+        if ($document->sharedUsers->contains('id', $targetUser->id)) {
+            // already shared
+            $created = false;
+        } else {
+            // kalau dokumen private, saat share pertama kali set jadi shared
+            if ($document->visibility === 'private') {
+                $document->visibility = 'shared';
+                $document->save();
+            }
+
+            $document->sharedUsers()->syncWithoutDetaching([$targetUser->id]);
+            $created = true;
+        }
+
+        return back()->with(
+            'success',
+            $created ? 'Akses berhasil ditambahkan' : 'User tersebut sudah memiliki akses'
+        );
+    }
+
+    public function shareDestroy(Document $document, \App\Models\User $user)
+    {
+        // policy owner/admin
+        $isOwner = (int) $document->user_id === (int) $this->currentUserId();
+        abort_unless($this->currentIsAdmin() || $isOwner, 403);
+
+        $document->load('sharedUsers');
+
+        // hapus relasi
+        $document->sharedUsers()->detach($user->id);
+
+        // jika tidak ada shared users tersisa dan visibility shared, kembali private
+        $document->refresh();
+        $remaining = $document->sharedUsers()->count();
+
+        if ($document->visibility === 'shared' && $remaining === 0) {
+            $document->visibility = 'private';
+            $document->save();
+        }
+
+        return back()->with('success', 'Akses berhasil dihapus');
+    }
 }

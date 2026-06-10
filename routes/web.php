@@ -89,4 +89,21 @@ Route::delete(
     [DocumentController::class, 'forceDelete']
 )->name('document.forceDelete');
 
+// Kelola akses dokumen (owner/admin)
+Route::get(
+    '/documents/{document}/shares/list',
+    [DocumentController::class, 'sharesListJson']
+)->middleware('auth')->name('document.shares.list');
+
+Route::post(
+    '/documents/{document}/shares',
+    [DocumentController::class, 'shareStore']
+)->middleware('auth')->name('document.shares.store');
+
+Route::delete(
+    '/documents/{document}/shares/{user}',
+    [DocumentController::class, 'shareDestroy']
+)->middleware('auth')->name('document.shares.destroy');
+
+
 require __DIR__.'/auth.php';

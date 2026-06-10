@@ -522,7 +522,9 @@
                                 <div>
 
                                     <a
-                                        href="{{ route('document.show',$d->id) }}"
+                                        href="{{ route('document.view',$d->id) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         class="text-decoration-none fw-semibold text-dark">
 
                                         {{ $d->nama_dokumen }}
@@ -631,12 +633,18 @@
                                     <li>
                                         <a
                                             class="dropdown-item"
-                                            href="{{ route('document.show', $d->id) }}">
+                                            href="#"
+                                            role="button"
+                                            data-bs-toggle="offcanvas"
+                                            data-bs-target="#infoCanvas"
+                                            aria-controls="infoCanvas"
+                                            data-doc-id="{{ $d->id }}">
 
                                             ℹ️ Informasi File
 
                                         </a>
                                     </li>
+
 
                                     <li>
                                         <hr class="dropdown-divider">
@@ -693,8 +701,38 @@
 
 </div>
 
+<!-- Offcanvas Info Dokumen -->
+<div
+    class="offcanvas offcanvas-end"
+    tabindex="-1"
+    id="infoCanvas"
+    aria-labelledby="infoCanvasLabel"
+    style="width: 460px;">
+
+    <div class="offcanvas-header">
+        <h5
+            class="offcanvas-title fw-bold"
+            id="infoCanvasLabel">
+            ℹ️ Informasi Dokumen
+        </h5>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <div id="infoCanvasBody" class="text-muted">
+            Pilih dokumen untuk melihat detail.
+        </div>
+    </div>
+</div>
+
 <!-- MODAL -->
 <div class="modal fade" id="uploadModal" tabindex="-1">
+
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content position-relative">
 
@@ -837,9 +875,236 @@
 <!-- Bootstrap JS sudah dimuat di layouts/app.blade.php -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Offcanvas info dokumen
+    const infoCanvasBody = document.getElementById('infoCanvasBody');
+    const infoCanvas = document.getElementById('infoCanvas');
+
+    if (infoCanvas && infoCanvasBody) {
+        infoCanvas.addEventListener('shown.bs.offcanvas', (event) => {
+            const trigger = event.relatedTarget;
+            const docId = trigger?.getAttribute('data-doc-id');
+
+            infoCanvasBody.innerHTML = 'Memuat informasi dokumen...';
+
+            if (!docId) {
+                infoCanvasBody.innerHTML = 'Dokumen tidak ditemukan.';
+                return;
+            }
+
+            // DEBUG: cetak docId yang terbaca dari trigger
+            console.log('[infoCanvas] docId=', docId);
+
+            fetch(`/document/${docId}`)
+                .then((res) => {
+                    if (!res.ok) throw new Error('Gagal memuat');
+                    return res.text();
+                })
+                .then((html) => {
+                    const container = document.createElement('div');
+                    container.innerHTML = html;
+
+
+                    const card = container.querySelector('.bg-white.rounded-5');
+                    if (!card) {
+                        infoCanvasBody.innerHTML = '<div class="text-muted">Informasi tidak tersedia.</div>';
+                        return;
+                    }
+
+                    const nama = (card.querySelector('h2')?.textContent || '').trim();
+                    const strongNodes = Array.from(card.querySelectorAll('strong'));
+
+                    const getAfterStrong = (label) => {
+                        const node = strongNodes.find((s) => s.textContent.trim().toLowerCase() === label);
+                        if (!node) return '';
+                        return (node.parentElement?.textContent || '').replace(node.textContent, '').trim();
+                    };
+
+                    const kategoriNode = strongNodes.find((s) => s.textContent.trim().toLowerCase() === 'kategori:');
+                    const kategori = kategoriNode
+                        ? (kategoriNode.parentElement?.textContent || '').replace(kategoriNode.textContent, '').trim()
+                        : '';
+
+                    const tanggalUpload = getAfterStrong('tanggal upload:');
+                    const pemilik = getAfterStrong('pemilik:');
+                    const ukuran = getAfterStrong('ukuran file:');
+
+                    // Tentukan jenis file dari extension yang ada di file path pada response show.
+                    // Ambil extension dari path file yang (di show) tersimpan di model.
+                    // Karena view show tidak menampilkan file path secara eksplisit, kita fallback pakai teks total.
+                    const fileText = (card.textContent || '').toLowerCase();
+                    // fallback: ambil ekstensi dari teks yang mungkin berisi nama file/path
+                    const extMatch = fileText.match(/\.(pdf|docx?|xls[x]?|png|jpe?g|gif)(?![a-z0-9])/);
+                    const ext = extMatch ? extMatch[1].toLowerCase().replace('jpeg','jpg') : '';
+
+                    const jenisFile = ext === 'pdf'
+                        ? 'PDF'
+                        : (ext === 'doc' || ext === 'docx')
+                            ? 'Word'
+                            : (ext === 'xls' || ext === 'xlsx')
+                                ? 'Excel'
+                                : (ext === 'png' || ext === 'jpg' || ext === 'gif')
+                                    ? 'Gambar'
+                                    : '-';
+
+                    // UI akses: tampilkan form kelola akses + daftar shared users
+                    const tampilkan = `
+                        <div class="p-1">
+                            <script type="application/json" id="__doc_id__">${docId}</script>
+                            <div class="mb-3">
+                                <div style="font-size: 42px; font-weight: 700; color:#0f172a; line-height:1.1;">${nama || '-'}</div>
+                                <div class="text-muted">${kategori ? 'Kategori: ' + kategori : 'Kategori: -'}</div>
+                            </div>
+
+                            <div class="bg-light border rounded-4 p-3 mb-4">
+                                <div class="fw-bold mb-1">Ringkasan</div>
+                                <div class="d-flex justify-content-between gap-3">
+                                    <div class="text-muted">Pemilik</div>
+                                    <div class="fw-semibold">${pemilik || '-'}</div>
+                                </div>
+                                <div class="d-flex justify-content-between gap-3">
+                                    <div class="text-muted">Tanggal upload</div>
+                                    <div class="fw-semibold">${tanggalUpload || '-'}</div>
+                                </div>
+                                <div class="d-flex justify-content-between gap-3">
+                                    <div class="text-muted">Ukuran</div>
+                                    <div class="fw-semibold">${ukuran || '-'}</div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4" />
+                            <h6 class="fw-bold mb-3">Akses</h6>
+                            <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
+                            <div class="mb-3" id="accessList"></div>
+
+                            <div class="mt-3" id="accessManage" style="display:none;">
+                                <div class="text-muted mb-2">Kelola akses (owner/admin)</div>
+
+                                <form method="POST" action="{{ route('document.shares.store', $d->id ?? '__DOCID__') }}" id="shareForm" class="d-flex gap-2 flex-wrap">
+                                    @csrf
+                                    <input type="hidden" name="email" id="shareEmailInput" />
+                                    <div class="flex-grow-1" style="min-width: 220px;">
+                                        <input
+                                            type="email"
+                                            class="form-control"
+                                            placeholder="Masukkan email user..."
+                                            id="shareEmail"
+                                            name="email"
+                                            required
+                                            {{ auth()->check() ? '' : 'disabled' }}>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Tambah</button>
+                                </form>
+                            </div>
+
+                            <hr class="my-4" />
+                            <h6 class="fw-bold mb-3">Detail File</h6>
+
+                            <div class="d-flex justify-content-between gap-3 mb-2">
+                                <div class="text-muted">Jenis file</div>
+                                <div class="fw-semibold">${jenisFile}</div>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3 mb-2">
+                                <div class="text-muted">Ukuran</div>
+                                <div class="fw-semibold">${ukuran || '-'}</div>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3 mb-2">
+                                <div class="text-muted">Pemilik</div>
+                                <div class="fw-semibold">${pemilik || '-'}</div>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <div class="text-muted">Terakhir dimodifikasi</div>
+                                <div class="fw-semibold">${tanggalUpload || '-'}</div>
+                            </div>
+
+                            <hr class="my-4" />
+                            <div class="fw-bold mb-2">Keterangan</div>
+                            <div class="text-muted">${(card.querySelector('.bg-light.border')?.textContent || card.textContent || '').trim().slice(0, 250)}...</div>
+
+                            <div class="mt-4">
+                                <a class="btn btn-primary w-100" href="{{ route('document.show', '__DOCID__') }}" target="_blank">Buka Detail</a>
+                            </div>
+
+                            <div class="mt-4">
+                                <hr class="my-4" />
+                                <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
+                                <div class="text-muted mb-3" id="accessTableLoading">Memuat daftar akses...</div>
+                                <div id="accessTable" class="d-flex flex-column gap-2"></div>
+                            </div>
+                        </div>
+                    `;
+
+                    infoCanvasBody.innerHTML = tampilkan;
+
+                    // render daftar akses (sharedUsers) via backend
+                    try {
+                        const docIdEl = container.querySelector('#__doc_id__');
+                        const activeDocId = (docIdEl && docIdEl.textContent) ? docIdEl.textContent.trim() : docId;
+
+                        // owner/admin bisa kelola
+                        const isOwner = Number('{{ auth()->check() ? ($d ?? null) : 0 }}') === 0; // placeholder, akan di-set lewat backend
+
+                        // fetch data shares JSON (relasi sharedUsers) dari backend
+                        fetch(`/documents/${activeDocId}/shares/list`)
+                            .then((r) => {
+                                if (!r.ok) throw new Error('fetch shares failed');
+                                return r.json();
+                            })
+                            .then((data) => {
+                                const accessList = infoCanvasBody.querySelector('#accessList');
+                                const loading = infoCanvasBody.querySelector('#accessLoading, #accessTableLoading');
+                                if (loading) loading.remove();
+
+                                if (!accessList) return;
+
+                                const isOwnerOrAdmin = !!data.canManage;
+                                const manageBox = infoCanvasBody.querySelector('#accessManage');
+                                if (manageBox) manageBox.style.display = isOwnerOrAdmin ? '' : 'none';
+
+                                const users = Array.isArray(data.users) ? data.users : [];
+
+                                if (users.length === 0) {
+                                    accessList.innerHTML = '<div class="text-muted">Belum ada akses.</div>';
+                                    return;
+                                }
+
+                                accessList.innerHTML = '';
+
+                                users.forEach((u) => {
+                                    accessList.innerHTML += `
+                                        <div class="d-flex align-items-center justify-content-between gap-2 border rounded-3 p-2">
+                                            <div>
+                                                <div class="fw-semibold">${u.name || '-'}</div>
+                                                <div class="text-muted" style="font-size: 13px;">${u.email || '-'}</div>
+                                            </div>
+                                            ${data.canManage ? `
+                                                <form method="POST" action="${u.removeUrl}" class="m-0">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus akses user ini?')">Hapus</button>
+                                                </form>
+                                            ` : ''}
+                                        </div>
+                                    `;
+                                });
+                            })
+                            .catch(() => {
+                                const accessList = infoCanvasBody.querySelector('#accessList');
+                                if (accessList) accessList.innerHTML = '<div class="text-muted">Gagal memuat daftar akses.</div>';
+                            });
+                    } catch (e) {}
+                })
+                })
+                .catch(() => {
+                    infoCanvasBody.innerHTML = 'Gagal memuat informasi dokumen.';
+                });
+        });
+    }
+
     // Update file name in upload modal
     const input = document.getElementById('fileInput');
     const fileNameEl = document.getElementById('file-name');
+
 
     if (!input || !fileNameEl) return;
 
