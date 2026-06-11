@@ -166,8 +166,9 @@
         }
 
         .table tbody td{
-            padding:20px;
-            vertical-align:middle;
+            border-bottom:1px solid #e5e7eb;
+            padding:18px;
+            text-align:center;
         }
 
         .table tbody tr:hover{
@@ -474,61 +475,48 @@
             <div class="table-responsive">
                 <table class="table align-middle">
                 <thead>
-                    <tr>
+                <tr>
+                    <th class="text-center">
+                        <a href="{{ route('document.index', array_merge(
+                            request()->except('sort','order'),
+                            [
+                                'sort'=>'nama',
+                                'order'=>(request('sort')=='nama' && request('order')=='asc') ? 'desc' : 'asc'
+                            ]
+                        )) }}" class="header-link d-inline-flex align-items-center justify-content-center">
+                            Nama Dokumen
+                        </a>
+                    </th>
 
+                    <th class="text-center">
+                        Kategori
+                    </th>
 
-                        <th class="text-start">
-                            <a href="{{ route('document.index', array_merge(
-                                request()->except('sort','order'),
-                                [
-                                    'sort'=>'nama',
-                                    'order'=>(request('sort')=='nama' && request('order')=='asc')
-                                        ? 'desc'
-                                        : 'asc'
-                                ]
-                            )) }}"
-                            class="header-link">
+                    <th class="text-center">
+                        Pemilik
+                    </th>
 
-                                Nama Dokumen
+                    <th class="text-center">
+                        <a href="{{ route('document.index', array_merge(
+                            request()->except('sort','order'),
+                            [
+                                'sort'=>'tanggal',
+                                'order'=>(request('sort')=='tanggal' && request('order')=='asc') ? 'desc' : 'asc'
+                            ]
+                        )) }}" class="header-link d-inline-flex align-items-center justify-content-center">
+                            Tanggal Diubah
+                        </a>
+                    </th>
 
-                            </a>
-                        </th>
+                    <th class="text-center">
+                        Ukuran File
+                    </th>
 
-                        <th class="text-center">
-                            Kategori
-                        </th>
-
-                        <th class="text-center">
-                            Pemilik
-                        </th>
-
-                        <th class="text-center">
-                            <a href="{{ route('document.index', array_merge(
-                                request()->except('sort','order'),
-                                [
-                                    'sort'=>'tanggal',
-                                    'order'=>(request('sort')=='tanggal' && request('order')=='asc')
-                                        ? 'desc'
-                                        : 'asc'
-                                ]
-                            )) }}"
-                            class="header-link">
-
-                                Tanggal Diubah
-
-                            </a>
-                        </th>
-
-                        <th class="text-center">
-                            Ukuran File
-                        </th>
-
-                        <th class="text-center">
-                            Aksi
-                        </th>
-
-                    </tr>
-                    </thead>
+                    <th class="text-center">
+                        Aksi
+                    </th>
+                </tr>
+            </thead>
 
                     <tbody>
 
@@ -1219,5 +1207,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </main>
 </div>
 </x-app-layout>
-
-

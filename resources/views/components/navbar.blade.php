@@ -13,7 +13,7 @@
             <div class="d-flex flex-column justify-content-center"
                  style="line-height:1.1;">
 
-                <h5 class="fw-bold mb-0">
+                <h5 class="fw-bold mb-0 fs-6 fs-lg-5">
                     PT SPR Langgak
                 </h5>
 

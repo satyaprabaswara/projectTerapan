@@ -1,7 +1,7 @@
 <style>
 /* Sticky sidebar butuh kontainer utama tidak mengganggu sticky */
 .sidebar {
-        width: 240px;
+        width: 220px;
         min-height: 100vh;
         background: #ffffff;
         border-right: 1px solid #e5e7eb;
