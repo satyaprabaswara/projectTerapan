@@ -175,12 +175,20 @@
         }
 
         .badge-category{
+            display:inline-flex;
+            align-items:center;
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
             background:#dbeafe;
             color:#2563eb;
             padding:8px 16px;
             border-radius:30px;
             font-weight:600;
         }
+
 
         .btn-view{
             background:#0ea5e9;
@@ -466,9 +474,8 @@
             <div class="table-responsive">
                 <table class="table align-middle">
                 <thead>
-                <link rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
                     <tr>
+
 
                         <th class="text-start">
                             <a href="{{ route('document.index', array_merge(
