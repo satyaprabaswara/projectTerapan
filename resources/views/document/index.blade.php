@@ -15,7 +15,7 @@
 
     /* HEADER TABLE */
     .table thead{
-        background:#f8fafc !important; /* Kembalikan ke warna abu-abu terang semula */
+        background:#f8fafc !important; /* Warna abu-abu terang semula */
     }
 
     .table thead th{
@@ -307,7 +307,6 @@
     @media (max-width: 768px){
         .w-64{ width: 100%; }
         main{ padding: 1rem !important; }
-        .d-flex.min-vh-100{ flex-direction: column; }
         .page-title { font-size: 28px; }
         .modal-content { padding: 20px; border-radius: 20px; }
     }
@@ -324,20 +323,22 @@
 </style>
 
 <x-app-layout>
-    <div class="flex min-h-screen bg-gray-100">
+    <!-- FIX LAYOUT: Ditambahkan flex-column di HP agar sidebar pindah ke atas dan konten ke bawah, di laptop kembali menyamping (flex-md-row) -->
+    <div class="d-flex flex-column flex-md-row min-h-screen bg-gray-100">
 
         @include('components.sidebar')
 
-        <main class="flex-1 min-w-0">
-            <div class="p-4 p-md-6">
+        <main class="flex-1 min-w-0 w-100">
+            <div class="p-3 p-md-6">
 
+                <!-- HEADER SECTION -->
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 class="page-title">📄 Daftar Dokumen</h1>
-                        <p class="sub-title">Kelola dan akses dokumen perusahaan</p>
+                        <h1 class="page-title fs-2 fs-md-1 mb-1">📄 Daftar Dokumen</h1>
+                        <p class="sub-title mb-0">Kelola dan akses dokumen perusahaan</p>
                     </div>
 
-                    <button class="btn btn-primary btn-upload"
+                    <button class="btn btn-primary btn-upload w-100 w-sm-auto"
                             type="button"
                             data-bs-toggle="modal"
                             data-bs-target="#uploadModal">
@@ -345,12 +346,13 @@
                     </button>
                 </div>
 
+                <!-- SEARCH & FILTER SECTION (Responsif Grid) -->
                 <div class="bg-white rounded-xl shadow-sm p-3 mb-4">
                     <form method="GET" action="{{ route('document.index') }}">
                         <div class="row g-3 align-items-center">
 
                             <div class="col-12 col-md-3">
-                                <select name="category_id" class="form-select rounded-lg py-2 w-full">
+                                <select name="category_id" class="form-select rounded-lg py-2 w-100">
                                     <option value="">Semua Kategori</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -365,11 +367,11 @@
                                        name="search"
                                        value="{{ request('search') }}"
                                        placeholder="Cari dokumen..."
-                                       class="form-control rounded-lg py-2 w-full">
+                                       class="form-control rounded-lg py-2 w-100">
                             </div>
 
                             <div class="col-12 col-md-2">
-                                <button type="submit" class="w-full btn btn-primary py-2" style="background: #2563eb; border: none;">
+                                <button type="submit" class="btn btn-primary py-2 w-100" style="background: #2563eb; border: none;">
                                     Cari
                                 </button>
                             </div>
@@ -378,9 +380,10 @@
                     </form>
                 </div>
 
+                <!-- TABLE CARD WITH OVERFLOW SCROLL -->
                 <div class="card main-card">
                     <div class="card-body p-0 p-md-4">
-                        <div class="table-responsive">
+                        <div class="table-responsive w-100">
                             <table class="table align-middle mb-0" style="min-width: 850px;">
                                 <thead>
                                     <tr>
@@ -404,7 +407,7 @@
                                 <tbody>
                                     @forelse($documents as $index => $d)
                                     <tr>
-                                        <!-- Nama Dokumen (Rata Kiri Sejajar Vertikal) -->
+                                        <!-- Nama Dokumen (Rata Kiri Sejajar Vertikal Rapi) -->
                                         <td class="text-start">
                                             @php
                                                 $ext = strtolower(pathinfo($d->file ?? '', PATHINFO_EXTENSION));
