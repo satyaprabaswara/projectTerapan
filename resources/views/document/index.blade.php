@@ -935,6 +935,7 @@
 
                         </span>
 
+
                         <input
                             type="file"
                             id="fileInput"
@@ -942,6 +943,8 @@
                             accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
                             hidden
                             required>
+
+                        <p class="text-muted mt-2 mb-0" style="font-size: 13px;">Maksimal upload: 10 MB</p>
 
                     </div>
                 </div>
