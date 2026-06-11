@@ -52,7 +52,7 @@
 
     .sidebar-menu.active {
         background: #2563eb;
-        color: white;
+        color: white !important; /* Memastikan teks tetap putih saat aktif */
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
 
@@ -70,42 +70,36 @@
 </style>
 
 <aside class="sidebar">
-    <!-- Menu -->
     <nav class="pt-2">
 
-        <!-- Dashboard -->
         <a href="{{ route('dashboard') }}"
            class="sidebar-menu {{ request()->routeIs('dashboard') ? 'active' : '' }}">
             📊 Dashboard
         </a>
 
-        <!-- Dokumen -->
         <a href="{{ route('document.index') }}"
-           class="sidebar-menu {{ request()->routeIs('document.*') ? 'active' : '' }}">
+           class="sidebar-menu {{ (request()->routeIs('document.*') && !request()->routeIs('document.trash')) ? 'active' : '' }}">
             📁 Kelola Dokumen
         </a>
 
-        <!-- Kategori -->
         <a href="{{ route('categories.index') }}"
            class="sidebar-menu {{ request()->routeIs('categories.*') ? 'active' : '' }}">
             📂 Kategori
         </a>
 
-        <!-- Pengguna -->
         <a href="{{ route('users.index') }}"
            class="sidebar-menu {{ request()->routeIs('users.*') ? 'active' : '' }}">
             👤 Pengguna
         </a>
 
-        <!-- Log Aktivitas -->
         <a href="{{ route('activity.logs') }}"
            class="sidebar-menu {{ request()->routeIs('activity.logs') ? 'active' : '' }}">
             📝 Log Aktivitas
         </a>
 
         <a href="{{ route('document.trash') }}"
-            class="sidebar-menu">
-                🗑️ Sampah
+           class="sidebar-menu {{ request()->routeIs('document.trash') ? 'active' : '' }}">
+            🗑️ Sampah
         </a>
     </nav>
 </aside>
