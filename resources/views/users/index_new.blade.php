@@ -45,7 +45,7 @@
         <main class="flex-1 p-6">
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
-                    <h1 class="page-title">👤 Pengguna</h1>
+                    <h1 class="page-title">Daftar Pengguna</h1>
                     <p class="sub-title">Kelola akses dan data user</p>
                 </div>
 
@@ -124,4 +124,3 @@
         </main>
     </div>
 </x-app-layout>
-

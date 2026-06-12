@@ -341,7 +341,7 @@
                 <!-- HEADER SECTION -->
                 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                     <div>
-                        <h1 class="page-title fs-2 fs-md-1 mb-1">📄 Daftar Dokumen</h1>
+                        <h1 class="page-title fs-2 fs-md-1 mb-1">Daftar Dokumen</h1>
                         <p class="sub-title mb-0">Kelola dan akses dokumen perusahaan</p>
                     </div>
 
