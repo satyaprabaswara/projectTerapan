@@ -7,7 +7,7 @@
     <div class="flex-grow-1 p-4">
 
         <h1 class="fw-bold mb-4">
-            🗑️ Sampah Dokumen
+            Sampah Dokumen
         </h1>
 
         <div class="card border-0 shadow-sm rounded-4">

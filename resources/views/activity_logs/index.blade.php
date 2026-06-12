@@ -16,7 +16,7 @@
                 <h1 class="fw-bold mb-1"
                     style="font-size: 42px;">
 
-                    📝 Log Aktivitas
+                    Log Aktivitas
 
                 </h1>
 
@@ -29,23 +29,18 @@
             <!-- Filter -->
             <div>
 
-                <form method="GET">
+                <form method="GET" id="activityFilterForm">
 
                 <div class="d-flex gap-2">
 
                     <input
                         type="date"
                         name="date"
+                        id="activityDateFilter"
                         value="{{ request('date') }}"
                         class="form-control rounded-4 shadow-sm">
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary rounded-4 px-4">
 
-                        Filter
-
-                    </button>
 
                     <a
                         href="{{ route('activity.logs') }}"
@@ -307,4 +302,15 @@
 
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateInput = document.getElementById('activityDateFilter');
+        const form = document.getElementById('activityFilterForm');
+        if (!dateInput || !form) return;
+
+        dateInput.addEventListener('change', function () {
+            form.submit();
+        });
+    });
+</script>
 </x-app-layout>

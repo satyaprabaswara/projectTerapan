@@ -176,14 +176,14 @@
                             <option value="admin"
                                 {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>
 
-                                👑 Admin
+                                Admin
 
                             </option>
 
                             <option value="viewer"
                                 {{ old('role', $user->role) === 'viewer' ? 'selected' : '' }}>
 
-                                👀 Viewer
+                                Viewer
 
                             </option>
 
