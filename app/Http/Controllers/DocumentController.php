@@ -306,16 +306,19 @@ class DocumentController extends Controller
                 'name' => $u->name,
                 'email' => $u->email,
                 'permission' => $u->pivot->permission,
-                'removeUrl' => route(
-                    'document.shares.destroy',
-                    [
-                        'document' => $document->id,
-                        'user' => $u->id
-                    ]
-                ),
+                'removeUrl' => $canManage
+                    ? route(
+                        'document.shares.destroy',
+                        [
+                            'document' => $document->id,
+                            'user' => $u->id
+                        ]
+                    )
+                    : null,
             ])->values(),
         ]);
     }
+
 
     public function shareStore(Request $request, Document $document)
     {

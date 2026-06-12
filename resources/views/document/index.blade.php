@@ -490,12 +490,16 @@
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
-                                                        <button
+<button
                                                             class="dropdown-item"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#shareModal"
                                                             data-doc-id="{{ $d->id }}"
-                                                            data-doc-name="{{ $d->nama_dokumen }}">
+                                                            data-doc-name="{{ $d->nama_dokumen }}"
+                                                            @if(!(auth()->user() && (strtolower(trim((string) auth()->user()->role)) === 'admin' || (int) $d->user_id === (int) auth()->id())))
+                                                                style="display:none;"
+                                                            @endif
+                                                            type="button">
                                                             <i class="bi bi-person-plus"></i>
                                                             <span>Kelola Akses</span>
                                                         </button>
@@ -795,6 +799,51 @@
 
 ========================================= */
 
+// handler hapus akses dari modal
+window.__handleRemoveShareAkses = function(docId, btnEl){
+
+    const removeUrl = btnEl.getAttribute('data-remove-url');
+
+    if(!removeUrl) return;
+
+    if(!confirm('Hapus akses pengguna ini?')) return;
+
+    // ambil CSRF dari meta (Laravel default)
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+    fetch(removeUrl, {
+
+        method: 'POST',
+
+        headers: {
+
+            'Content-Type': 'application/json',
+
+            'X-CSRF-TOKEN': csrf,
+
+            'X-HTTP-Method-Override': 'DELETE'
+
+        },
+
+        body: JSON.stringify({})
+
+    }).then(r => {
+
+        if(!r.ok) throw new Error('Request failed');
+
+        // reload agar list & removeUrl sinkron
+
+        window.location.reload();
+
+    }).catch(() => {
+
+        alert('Gagal menghapus akses');
+
+    });
+
+};
+
+
 document.querySelectorAll('[data-bs-target="#shareModal"]')
 
 .forEach(btn => {
@@ -817,11 +866,11 @@ document.querySelectorAll('[data-bs-target="#shareModal"]')
 
             let html = '';
 
-            data.users.forEach(user => {
+data.users.forEach(user => {
 
                 html += `
 
-                <div class="border rounded p-2 mb-2 d-flex justify-content-between align-items-center">
+                <div class="border rounded p-2 mb-2 d-flex justify-content-between align-items-center gap-3 flex-wrap">
 
                     <div>
 
@@ -831,11 +880,23 @@ document.querySelectorAll('[data-bs-target="#shareModal"]')
 
                     </div>
 
-                    <span class="badge bg-primary">
+                    <div class="d-flex align-items-center gap-2">
 
-                        ${user.permission}
+                        <span class="badge bg-primary">
 
-                    </span>
+                            ${user.permission}
+
+                        </span>
+
+                        ${user.removeUrl ? `
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                data-remove-url="${user.removeUrl}"
+                                onclick="window.__handleRemoveShareAkses && window.__handleRemoveShareAkses('${docId}', this)" >
+                                Hapus akses
+                            </button>
+                        ` : ''}
+
+                    </div>
 
                 </div>
 
@@ -868,7 +929,7 @@ document.querySelectorAll('[data-bs-target="#shareModal"]')
                 Kelola Akses
             </h4>
 
-            <form method="POST" id="shareForm">
+                    <form method="POST" id="shareForm">
                 @csrf
 
                 <div class="mb-3">
@@ -898,7 +959,7 @@ document.querySelectorAll('[data-bs-target="#shareModal"]')
                     </select>
                 </div>
 
-                <button class="btn btn-primary w-100">
+                <button class="btn btn-primary w-100" type="submit">
                     Simpan
                 </button>
 
@@ -909,6 +970,8 @@ document.querySelectorAll('[data-bs-target="#shareModal"]')
             <div id="shareUserList">
                 Loading...
             </div>
+
+            <div class="text-muted" style="font-size:12px;">Pemilik/Admin bisa menghapus akses pada daftar.</div>
 
         </div>
     </div>
