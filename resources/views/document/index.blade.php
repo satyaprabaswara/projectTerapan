@@ -331,11 +331,11 @@
 
 <x-app-layout>
     <!-- FIX LAYOUT: Ditambahkan flex-column di HP agar sidebar pindah ke atas dan konten ke bawah, di laptop kembali menyamping (flex-md-row) -->
-    <div class="d-flex flex-column flex-md-row min-h-screen bg-gray-100">
+    <div class="d-flex">
 
         @include('components.sidebar')
 
-        <main class="flex-1 min-w-0 w-100">
+        <main class="flex-grow-1">
             <div class="p-3 p-md-6">
 
                 <!-- HEADER SECTION -->
