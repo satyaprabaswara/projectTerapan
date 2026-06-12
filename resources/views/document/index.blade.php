@@ -345,13 +345,20 @@
                         <p class="sub-title mb-0">Kelola dan akses dokumen perusahaan</p>
                     </div>
 
-                   <button
+@php
+                    $role = Auth::user()?->role;
+                    $isViewer = $role && strtolower(trim((string) $role)) === 'viewer';
+                @endphp
+
+@unless($isViewer)
+                    <button
                         class="btn btn-upload"
                         type="button"
                         data-bs-toggle="modal"
                         data-bs-target="#uploadModal">
                         + Upload Dokumen
                     </button>
+                @endunless
                 </div>
 
                 <!-- SEARCH & FILTER SECTION (Responsif Grid) -->
@@ -640,6 +647,22 @@
                 document.querySelectorAll('[data-doc-id]').forEach(button => {
                     button.addEventListener('click', function () {
                         const docId = this.dataset.docId;
+                        const canManageSection = infoCanvasBody.querySelector('#manageSection');
+                        const visibilitySelect = infoCanvasBody.querySelector('#accessVisibilitySelect');
+                        const visibilityInput = infoCanvasBody.querySelector('#visibilityInput');
+                        const saveVisibilityBtn = infoCanvasBody.querySelector('#saveVisibilityBtn');
+
+                        // handler simpan akses (owner/admin saja)
+                        if (saveVisibilityBtn && visibilitySelect && visibilityInput) {
+                            saveVisibilityBtn.onclick = function () {
+                                const visibilityVal = visibilitySelect.value;
+                                visibilityInput.value = visibilityVal;
+
+                                // POST via form (akan redirect, tapi ok untuk sync UI)
+                                // saat ini backend endpoint visibility belum dibuat
+                                alert('Fitur ubah visibility belum tersedia di backend (endpoint shares/visibility belum ada).');
+                            };
+                        }
                         if(!docId) return;
                         
                         infoCanvasBody.innerHTML = 'Memuat informasi dokumen...';
@@ -677,7 +700,31 @@
                                         <hr class="my-4" />
                                         <h6 class="fw-bold mb-3">Akses</h6>
                                         <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
-                                        <div class="mb-3" id="accessList"></div>
+<div class="mb-3" id="accessList"></div>
+                                        <div class="mt-3" id="manageSection" style="display:none;">
+                                            <hr class="my-4" />
+                                            <h6 class="fw-bold mb-3">Kelola Akses</h6>
+
+                                            <div class="mb-3">
+                                                <label class="fw-semibold">Hak Akses</label>
+                                                <select id="accessVisibilitySelect" class="form-select">
+                                                    <option value="private">Private</option>
+                                                    <option value="shared">Shared</option>
+                                                    <option value="public">Public (Login)</option>
+                                                </select>
+                                                <div class="text-muted" style="font-size:13px;">Pemilik/Admin dapat mengubah akses.</div>
+                                            </div>
+
+                                            <form id="visibilityForm" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="visibility" id="visibilityInput" />
+                                            </form>
+
+                                            <button type="button" id="saveVisibilityBtn" class="btn btn-primary w-100">
+                                                Simpan Akses
+                                            </button>
+                                        </div>
+
                                         <hr class="my-4" />
                                         <h6 class="fw-bold mb-3">Detail File</h6>
                                         <div class="d-flex justify-content-between gap-3 mb-2"><div class="text-muted">Jenis file</div><div class="fw-semibold">-</div></div>

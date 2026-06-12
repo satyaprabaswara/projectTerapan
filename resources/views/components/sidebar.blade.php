@@ -87,17 +87,25 @@
             <span class="menu-text">Kelola Dokumen</span>
         </a>
 
-        <a href="{{ route('categories.index') }}"
-        class="sidebar-menu {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-            <i class="bi bi-file-earmark-text"></i>
-            <span class="menu-text">Kategori</span>
-        </a>
+        @php
+            $role = Auth::user()?->role;
+            $isViewer = $role && strtolower(trim((string) $role)) === 'viewer';
+        @endphp
 
-        <a href="{{ route('users.index') }}"
-        class="sidebar-menu {{ request()->routeIs('users.*') ? 'active' : '' }}">
-            <i class="bi bi-people-fill"></i>
-            <span class="menu-text">Pengguna</span>
-        </a>
+        @unless($isViewer)
+            <a href="{{ route('categories.index') }}"
+            class="sidebar-menu {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span class="menu-text">Kategori</span>
+            </a>
+
+            <a href="{{ route('users.index') }}"
+            class="sidebar-menu {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                <i class="bi bi-people-fill"></i>
+                <span class="menu-text">Pengguna</span>
+            </a>
+        @endunless
+
 
        <a href="{{ route('activity.logs') }}"
         class="sidebar-menu {{ request()->routeIs('activity.logs') ? 'active' : '' }}">
