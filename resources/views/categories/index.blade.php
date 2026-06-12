@@ -10,6 +10,16 @@
         border-radius: 0 14px 14px 0 !important;
         min-width: 110px;
     }
+
+    .page-title{
+    font-weight:700;
+    color:#1e293b;
+    }
+
+    .sub-title{
+    color:#64748b;
+    font-size:15px;
+    }
     </style>
 
 {{-- gunakan layout/warna yang konsisten dengan halaman lain --}}
@@ -18,31 +28,34 @@
     <!-- SIDEBAR -->
         @include('components.sidebar')
 
-    <!-- CONTENT -->
-    <main class="flex-grow-1 p-5">
+   <!-- CONTENT -->
+    <main class="flex-1 min-w-0 w-100">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="p-3 p-md-4">
 
-            <div>
-                <h1 class="fw-bold">
-                    📂 Daftar Kategori
-                </h1>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
 
-                <p class="text-muted">
-                    Kelola kategori dokumen
-                </p>
-            </div>
+    <div>
 
-            <a
-                href="#"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#kategoriModal">
+        <h1 class="page-title fs-2 fs-md-1 mb-1">
+            📂 Daftar Kategori
+        </h1>
 
-                + Tambah Kategori
-            </a>
+        <p class="sub-title mb-0">
+            Kelola kategori dokumen
+        </p>
+    </div>
 
-        </div>
+    <a href="#"
+       class="btn btn-primary"
+       data-bs-toggle="modal"
+       data-bs-target="#kategoriModal">
+
+        + Tambah Kategori
+
+    </a>
+
+</div>
 
        <!-- SEARCH -->
         <form

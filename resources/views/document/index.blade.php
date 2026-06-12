@@ -152,12 +152,19 @@
         padding:15px;
     }
 
-    .btn-upload{
-        background:linear-gradient(135deg,#2563eb,#3b82f6);
-        border:none;
-        border-radius:14px;
-        padding:14px 28px;
-        font-weight:600;
+   .btn-upload{
+    background:#2563eb !important;
+    color:#fff !important;
+    border:none !important;
+    border-radius:10px;
+    padding:10px 20px;
+    font-weight:500;
+    display:inline-block;
+    }
+
+    .btn-upload:hover{
+        background:#1d4ed8 !important;
+        color:#fff !important;
     }
 
     .badge-category{
@@ -338,10 +345,11 @@
                         <p class="sub-title mb-0">Kelola dan akses dokumen perusahaan</p>
                     </div>
 
-                    <button class="btn btn-primary btn-upload w-100 w-sm-auto"
-                            type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#uploadModal">
+                   <button
+                        class="btn btn-upload"
+                        type="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#uploadModal">
                         + Upload Dokumen
                     </button>
                 </div>

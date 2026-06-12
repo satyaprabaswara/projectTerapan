@@ -2,22 +2,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="min-h-screen bg-gray-100">
+<div class="flex min-h-screen bg-gray-100">
 
-    <div class="d-flex flex-column flex-lg-row">
+    <!-- SIDEBAR -->
+    @include('components.sidebar')
 
-        <!-- SIDEBAR (responsive) -->
-        <div class="d-none d-lg-block">
-            @include('components.sidebar')
-        </div>
+    <!-- CONTENT -->
+    <main class="flex-1 min-w-0 w-100">
 
-        <!-- CONTENT -->
-        <main class="flex-1 w-100">
-
-      <div class="p-4">
-
-    <!-- CARD STATISTIK -->
-    <div class="row g-3 mb-4">
+        <div class="p-3 p-md-4">
 
                 <!-- CARD STATISTIK (diperkecil) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
