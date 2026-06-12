@@ -80,12 +80,13 @@
 
                 </button>
 
-            </div>
+                    </div>
 
         </form>
 
         <!-- TABLE -->
         <div class="card border-0 shadow-sm rounded-4">
+
 
             <div class="card-body p-4">
 
@@ -119,24 +120,34 @@
 
                             <td class="text-center">
 
-                                <form
-                                    action="{{ route('categories.destroy', $category->id) }}"
-                                    method="POST">
+                    <div class="d-flex justify-content-center gap-2">
 
-                                    @csrf
-                                    @method('DELETE')
+                                            <a
+                                                href="{{ route('categories.edit', $category->id) }}"
+                                                class="btn btn-outline-primary btn-sm rounded-pill">
+                                                Edit
+                                            </a>
 
-                                    <button
-                                        type="submit"
-                                        class="btn btn-danger btn-sm rounded-pill"
-                                        onclick="return confirm('Yakin hapus kategori?')">
 
-                                        Hapus
-                                    </button>
+                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="m-0">
 
-                                </form>
+                                            @csrf
+                                            @method('DELETE')
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm rounded-pill"
+                                                onclick="return confirm('Yakin hapus kategori?')">
+
+                                                Hapus
+                                            </button>
+
+                                        </form>
+
+                                    </div>
 
                             </td>
+
 
                         </tr>
 
