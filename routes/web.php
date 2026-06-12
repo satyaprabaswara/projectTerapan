@@ -105,5 +105,9 @@ Route::delete(
     [DocumentController::class, 'shareDestroy']
 )->middleware('auth')->name('document.shares.destroy');
 
+Route::post(
+    '/documents/{document}/share',
+    [DocumentController::class, 'shareStore']
+)->name('document.share');
 
 require __DIR__.'/auth.php';

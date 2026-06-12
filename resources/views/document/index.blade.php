@@ -483,6 +483,17 @@
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
+                                                        <button
+                                                            class="dropdown-item"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#shareModal"
+                                                            data-doc-id="{{ $d->id }}"
+                                                            data-doc-name="{{ $d->nama_dokumen }}">
+                                                            <i class="bi bi-person-plus"></i>
+                                                            <span>Kelola Akses</span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
                                                         <a class="dropdown-item" href="{{ route('document.view', $d->id) }}" target="_blank" rel="noopener noreferrer">
                                                             <i class="bi bi-eye"></i><span>Lihat Dokumen</span>
                                                         </a>
@@ -731,8 +742,130 @@
                         }
                     });
                 }
+                /* =========================================
+
+   SHARE MODAL
+
+========================================= */
+
+document.querySelectorAll('[data-bs-target="#shareModal"]')
+
+.forEach(btn => {
+
+    btn.addEventListener('click', function(){
+
+        const docId = this.dataset.docId;
+
+        document
+
+            .getElementById('shareForm')
+
+            .action = `/documents/${docId}/share`;
+
+        fetch(`/documents/${docId}/shares/list`)
+
+        .then(r => r.json())
+
+        .then(data => {
+
+            let html = '';
+
+            data.users.forEach(user => {
+
+                html += `
+
+                <div class="border rounded p-2 mb-2 d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <b>${user.name}</b><br>
+
+                        <small>${user.email}</small>
+
+                    </div>
+
+                    <span class="badge bg-primary">
+
+                        ${user.permission}
+
+                    </span>
+
+                </div>
+
+                `;
+
+            });
+
+            document.getElementById('shareUserList').innerHTML = html;
+
+        });
+
+    });
+
+});
             });
             </script>
+
+<div class="modal fade" id="shareModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-4 position-relative">
+
+            <button
+                type="button"
+                class="btn-close position-absolute top-0 end-0 m-3"
+                data-bs-dismiss="modal"
+                aria-label="Close">
+            </button>
+
+            <h4 class="fw-bold mb-3">
+                Kelola Akses
+            </h4>
+
+            <form method="POST" id="shareForm">
+                @csrf
+
+                <div class="mb-3">
+                    <label>Email User</label>
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        required>
+                </div>
+
+                <div class="mb-3">
+                    <label>Hak Akses</label>
+
+                    <select
+                        name="permission"
+                        class="form-select">
+
+                        <option value="viewer">
+                            Viewer
+                        </option>
+
+                        <option value="editor">
+                            Editor
+                        </option>
+
+                    </select>
+                </div>
+
+                <button class="btn btn-primary w-100">
+                    Simpan
+                </button>
+
+            </form>
+
+            <hr>
+
+            <div id="shareUserList">
+                Loading...
+            </div>
+
+        </div>
+    </div>
+</div>
         </main>
     </div>
 </x-app-layout>

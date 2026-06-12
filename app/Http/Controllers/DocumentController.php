@@ -305,16 +305,29 @@ class DocumentController extends Controller
                 'id' => $u->id,
                 'name' => $u->name,
                 'email' => $u->email,
-                'removeUrl' => route('document.shares.destroy', ['document' => $document->id, 'user' => $u->id]),
+                'permission' => $u->pivot->permission,
+                'removeUrl' => route(
+                    'document.shares.destroy',
+                    [
+                        'document' => $document->id,
+                        'user' => $u->id
+                    ]
+                ),
             ])->values(),
         ]);
     }
 
     public function shareStore(Request $request, Document $document)
     {
+        $user = $request->input('email');
 
+        $targetUser = \App\Models\User::where(
+            'email',
+            $user
+        )->first();
         $request->validate([
             'email' => 'required|email|exists:users,email',
+            'permission' => 'required|in:viewer,editor'
         ]);
 
         $user = $request->input('email');
@@ -341,7 +354,12 @@ class DocumentController extends Controller
                 $document->save();
             }
 
-            $document->sharedUsers()->syncWithoutDetaching([$targetUser->id]);
+            $document->sharedUsers()
+            ->syncWithoutDetaching([
+                $targetUser->id => [
+                    'permission' => $request->permission
+                ]
+            ]);
             $created = true;
         }
 

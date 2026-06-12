@@ -39,10 +39,8 @@ class Document extends Model
     {
         return $this->belongsToMany(
             User::class,
-            'document_shares',
-            'document_id',
-            'user_id'
-        )->withTimestamps();
+            'document_shares'
+        )->withPivot('permission');
     }
 }
 
