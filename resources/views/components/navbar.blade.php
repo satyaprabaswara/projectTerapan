@@ -63,10 +63,6 @@
                             {{ Auth::user()?->name ?? 'Admin' }}
                         </div>
 
-                        <small class="text-muted">
-                            Administrator
-                        </small>
-
                     </li>
 
                     <li><hr class="dropdown-divider"></li>
@@ -77,16 +73,6 @@
 
                             <i class="bi bi-person me-2"></i>
                             Profile
-
-                        </a>
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item"
-                           href="{{ route('settings') }}">
-
-                            <i class="bi bi-gear me-2"></i>
-                            Settings
 
                         </a>
                     </li>

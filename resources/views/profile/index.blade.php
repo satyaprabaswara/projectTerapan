@@ -219,16 +219,23 @@
                         </div>
 
 
-                        <div class="text-end mt-4">
+                        <div class="d-flex justify-content-between align-items-center gap-2 mt-4 flex-wrap">
 
-                            <a href="{{ route('profile.edit') }}"
-                               class="btn btn-primary">
+                            <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+
+                                ← Back
+
+                            </a>
+
+                            <a href="{{ route('profile.edit') }}" class="btn btn-primary">
+
 
                                 Edit Profile
 
                             </a>
 
                         </div>
+
 
                     </div>
 
