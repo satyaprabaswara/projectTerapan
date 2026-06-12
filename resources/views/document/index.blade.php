@@ -658,14 +658,31 @@
 
                         // handler simpan akses (owner/admin saja)
                         if (saveVisibilityBtn && visibilitySelect && visibilityInput) {
-                            saveVisibilityBtn.onclick = function () {
-                                const visibilityVal = visibilitySelect.value;
-                                visibilityInput.value = visibilityVal;
+                                saveVisibilityBtn.onclick = function () {
+                                    const visibilityVal = visibilitySelect.value;
+                                    visibilityInput.value = visibilityVal;
 
-                                // POST via form (akan redirect, tapi ok untuk sync UI)
-                                // saat ini backend endpoint visibility belum dibuat
-                                alert('Fitur ubah visibility belum tersedia di backend (endpoint shares/visibility belum ada).');
-                            };
+                                    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                                    fetch(`/documents/${docId}/visibility`, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': csrf,
+                                            'Accept': 'application/json',
+                                        },
+                                        body: JSON.stringify({ visibility: visibilityVal })
+                                    })
+                                    .then(async (r) => {
+                                        if (!r.ok) {
+                                            const txt = await r.text().catch(() => '');
+                                            throw new Error(txt || 'Failed to update visibility');
+                                        }
+                                        window.location.reload();
+                                    })
+                                    .catch((e) => {
+                                        alert(e.message || 'Gagal memperbarui visibility');
+                                    });
+                                };
                         }
                         if(!docId) return;
                         
@@ -691,6 +708,7 @@
 
                                 infoCanvasBody.innerHTML = `
                                     <div class="p-1">
+
                                         <div class="mb-3">
                                             <div style="font-size: 28px; font-weight: 700; color:#0f172a; line-height:1.2; word-break: break-word;">${nama || '-'}</div>
                                             <div class="text-muted">${kategori ? 'Kategori: ' + kategori : 'Kategori: -'}</div>
@@ -702,15 +720,14 @@
                                             <div class="d-flex justify-content-between gap-3 flex-wrap"><div class="text-muted">Ukuran</div><div class="fw-semibold">${ukuran || '-'}</div></div>
                                         </div>
                                         <hr class="my-4" />
-                                        <h6 class="fw-bold mb-3">Akses</h6>
+                                        <h6 class="fw-bold mb-3">Yang Memiliki Akses</h6>
                                         <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
 <div class="mb-3" id="accessList"></div>
-                                        <div class="mt-3" id="manageSection" style="display:none;">
+                                        <div class="mt-3" id="manageSection" style="display:block;">
                                             <hr class="my-4" />
                                             <h6 class="fw-bold mb-3">Kelola Akses</h6>
 
                                             <div class="mb-3">
-                                                <label class="fw-semibold">Hak Akses</label>
                                                 <select id="accessVisibilitySelect" class="form-select">
                                                     <option value="private">Private</option>
                                                     <option value="shared">Shared</option>
@@ -736,11 +753,6 @@
                                         <div class="d-flex justify-content-between gap-3 mb-2"><div class="text-muted">Pemilik</div><div class="fw-semibold">${pemilik || '-'}</div></div>
                                         <div class="d-flex justify-content-between gap-3"><div class="text-muted">Terakhir dimodifikasi</div><div class="fw-semibold">${tanggal || '-'}</div></div>
                                         <hr class="my-4" />
-                                        <div class="fw-bold mb-2">Keterangan</div>
-                                        <div class="text-muted" style="word-break: break-word;">${doc.querySelector('.bg-light.border')?.textContent?.trim() || doc.body.textContent.trim().slice(0,250)}...</div>
-                                        <div class="mt-4"><a class="btn btn-primary w-100" href="/document/${docId}" target="_blank">Buka Detail</a></div>
-                                        <div class="mt-4">
-                                            <hr class="my-4" />
                                             <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
                                             <div id="accessTable" class="d-flex flex-column gap-2"></div>
                                         </div>
@@ -749,7 +761,13 @@
 
                                 const accessListEl = infoCanvasBody.querySelector('#accessList');
                                 fetch(`/documents/${docId}/shares/list`)
-                                    .then((r) => r.json())
+                                    .then(async (r) => {
+                                        if (!r.ok) {
+                                            const txt = await r.text().catch(() => '');
+                                            throw new Error(txt || 'Failed to load shares');
+                                        }
+                                        return r.json();
+                                    })
                                     .then((data) => {
                                         const loading = infoCanvasBody.querySelector('#accessLoading');
                                         if (loading) loading.remove();

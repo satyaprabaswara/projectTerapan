@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('document', DocumentController::class);
 
+
 Route::get('/activity-logs', [\App\Http\Controllers\ActivityLogController::class, 'index'])
     ->middleware('auth')
     ->name('activity.logs');
@@ -109,5 +110,12 @@ Route::post(
     '/documents/{document}/share',
     [DocumentController::class, 'shareStore']
 )->name('document.share');
+
+// Ubah visibility dokumen (owner/admin)
+Route::patch(
+    '/documents/{document}/visibility',
+    [DocumentController::class, 'updateVisibility']
+)->middleware('auth')->name('document.visibility.update');
+
 
 require __DIR__.'/auth.php';

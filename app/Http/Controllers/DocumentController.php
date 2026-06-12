@@ -396,8 +396,48 @@ class DocumentController extends Controller
     }
 
     // Update (digunakan untuk fitur "Ganti Nama")
+    public function updateVisibility(Request $request, Document $document)
+    {
+        $isOwner = (int) $document->user_id === (int) $this->currentUserId();
+        abort_unless($this->currentIsAdmin() || $isOwner, 403);
+
+        $request->validate([
+            'visibility' => 'required|in:private,shared,public',
+        ]);
+
+        // Pastikan ambil dari body JSON
+        $document->visibility = $request->json('visibility');
+        $document->save();
+
+        ActivityLog::create([
+            'user_id' => $this->currentUserId(),
+            'action' => 'document.visibility.updated',
+            'description' => sprintf(
+                'Jam %s user %s mengubah visibility dokumen "%s" menjadi "%s"',
+                now()->format('H:i'),
+                Auth::user()->name ?? Auth::user()->email ?? Auth::user()->id,
+                $document->nama_dokumen,
+                $document->visibility
+            ),
+            'subject_type' => Document::class,
+            'subject_id' => $document->id,
+        ]);
+
+        // Support AJAX (fetch) supaya UI bisa langsung refresh dan lebih pasti
+        if ($request->expectsJson() || $request->isJson()) {
+            return response()->json([
+                'success' => true,
+                'visibility' => $document->visibility,
+            ], 200);
+        }
+
+        return back()->with('success', 'Visibility dokumen berhasil diperbarui');
+    }
+
+    // Update (digunakan untuk fitur "Ganti Nama")
     public function update(Request $request, Document $document)
     {
+
         $isOwner = (int) $document->user_id === (int) $this->currentUserId();
         abort_unless($this->currentIsAdmin() || $isOwner, 403);
 
