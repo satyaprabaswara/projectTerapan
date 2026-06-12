@@ -136,49 +136,35 @@
 
                     <div class="card-body p-5">
 
-                        <div class="row mb-4">
+                            <div class="row mb-4 justify-content-center">
 
-                            <div class="col-md-4 mb-3">
+                                <div class="col-md-6 mb-3 d-flex">
 
-                                <div class="stat-box">
+                                    <div class="stat-box w-100 d-flex flex-column align-items-center justify-content-center">
 
-                                    <h4>
-                                        {{ ucfirst(Auth::user()->role) }}
-                                    </h4>
+                                        <h4 class="text-center">{{ ucfirst($role ?? (Auth::user()->role ?? '')) }}</h4>
 
-                                    <small>Role</small>
+                                        <small>Role</small>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6 mb-3 d-flex">
+
+                                    <div class="stat-box w-100 d-flex flex-column align-items-center justify-content-center">
+
+                                        <h4 class="text-center">Aktif</h4>
+
+                                        <small>Status</small>
+
+                                    </div>
 
                                 </div>
 
                             </div>
 
-                            <div class="col-md-4 mb-3">
 
-                                <div class="stat-box">
-
-                                    <h4>Aktif</h4>
-
-                                    <small>Status</small>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-
-                                <div class="stat-box">
-
-                                    <h4>
-                                        {{ optional(Auth::user()->created_at)->format('Y') ?? '-' }}
-                                    </h4>
-
-                                    <small>Bergabung</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
 
                         <hr>
 
@@ -230,21 +216,8 @@
 
                             </div>
 
-                            <div class="col-md-6 mb-3">
-
-                                <label class="form-label fw-semibold">
-                                    Bergabung Sejak
-                                </label>
-
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    value="{{ optional(Auth::user()->created_at)->format('d M Y') ?? '-' }}"
-                                    readonly>
-
-                            </div>
-
                         </div>
+
 
                         <div class="text-end mt-4">
 
