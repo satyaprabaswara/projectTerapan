@@ -749,7 +749,7 @@
 
                                 const accessListEl = infoCanvasBody.querySelector('#accessList');
                                 fetch(`/documents/${docId}/shares/list`)
-                                    .then((r) => r.ok ? r.json() : truncate)
+                                    .then((r) => r.json())
                                     .then((data) => {
                                         const loading = infoCanvasBody.querySelector('#accessLoading');
                                         if (loading) loading.remove();

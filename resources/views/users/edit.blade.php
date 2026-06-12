@@ -14,7 +14,7 @@
                 <h1 class="fw-bold"
                     style="font-size: 40px;">
 
-                    ✏️ Edit Pengguna
+                    Edit Pengguna
 
                 </h1>
 
@@ -208,14 +208,14 @@
                             type="submit"
                             class="btn btn-primary rounded-4 px-5 py-3 fw-semibold shadow-sm">
 
-                            💾 Update
+                            Update
 
                         </button>
 
                         <a href="{{ route('users.index') }}"
                            class="btn btn-light border rounded-4 px-5 py-3 fw-semibold">
 
-                            ❌ Batal
+                            Batal
 
                         </a>
 

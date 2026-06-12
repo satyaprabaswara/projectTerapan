@@ -277,16 +277,6 @@
                 Login
             </button>
 
-            <div class="forgot">
-
-                Lupa password?
-
-                <a href="{{ route('password.request') }}">
-                    Reset password
-                </a>
-
-            </div>
-
             <div class="forgot" style="margin-top:10px;">
                 Belum punya akun?
                 <a href="{{ route('register') }}">
