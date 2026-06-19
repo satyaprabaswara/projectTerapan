@@ -524,12 +524,25 @@
                                                             <i class="bi bi-info-circle"></i><span>Informasi File</span>
                                                         </a>
                                                     </li>
-                                                    <li><hr class="dropdown-divider"></li>
                                                     <li>
-                                                        <form action="{{ route('document.destroy',$d->id) }}" method="POST" class="m-0">
+                                                        @php
+                                                            $role = Auth::user()?->role;
+                                                            $isAdmin = $role && strtolower(trim((string) $role)) === 'admin';
+                                                            $isOwner = (int) $d->user_id === (int) (auth()->id() ?? 0);
+                                                        @endphp
+
+                                                        <form
+                                                            action="{{ route('document.destroy', $d->id) }}"
+                                                            method="POST"
+                                                            class="m-0"
+                                                            @if(!($isAdmin || $isOwner)) style="display:none;" @endif>
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" onclick="return confirm('Yakin hapus dokumen?')" class="dropdown-item text-danger">
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <button
+                                                                type="submit"
+                                                                onclick="return confirm('Yakin hapus dokumen?')"
+                                                                class="dropdown-item text-danger">
                                                                 <i class="bi bi-trash"></i><span>Hapus</span>
                                                             </button>
                                                         </form>
@@ -997,3 +1010,4 @@ data.users.forEach(user => {
         </main>
     </div>
 </x-app-layout>
+

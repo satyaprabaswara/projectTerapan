@@ -164,6 +164,12 @@ class DocumentController extends Controller
     // hapus dokumen
     public function destroy(Document $document)
     {
+        $userId = $this->currentUserId();
+        $isOwner = $userId !== null && (int) $document->user_id === (int) $userId;
+        $isAdmin = $this->currentIsAdmin();
+
+        abort_unless($isAdmin || $isOwner, 403);
+
         $documentName = $document->nama_dokumen;
 
         // soft delete saja
