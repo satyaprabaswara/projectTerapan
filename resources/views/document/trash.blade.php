@@ -11,101 +11,122 @@
         </h1>
 
         <div class="card border-0 shadow-sm rounded-4">
+
             <div class="card-body">
 
                 <table class="table align-middle">
 
                     <thead>
                         <tr>
-                            <th>Nama Dokumen</th>
+
+                            <th>
+                                Nama Dokumen
+                            </th>
 
                             @if(Auth::user()->role === 'admin')
-                                <th>Dihapus Oleh</th>
+                                <th>
+                                    Dihapus Oleh
+                                </th>
                             @endif
 
-                            <th>Dihapus Pada</th>
-                            <th>Aksi</th>
+                            <th>
+                                Dihapus Pada
+                            </th>
+
+                            <th class="text-center" style="width:220px;">
+                                Aksi
+                            </th>
+
                         </tr>
-                        </thead>
+                    </thead>
 
                     <tbody>
 
-                    @forelse($documents as $document)
+                        @forelse($documents as $document)
 
-                      <tr>
+                            <tr>
 
-                        <td>
-                            {{ $document->nama_dokumen }}
-                        </td>
+                                <td>
+                                    {{ $document->nama_dokumen }}
+                                </td>
 
-                        @if(Auth::user()->role === 'admin')
-                        <td>
-                            {{ $document->user->name ?? '-' }}
-                        </td>
-                        @endif
+                                @if(Auth::user()->role === 'admin')
+                                    <td>
+                                        {{ $document->user->name ?? '-' }}
+                                    </td>
+                                @endif
 
-                        <td>
-                            {{ $document->deleted_at->format('d M Y H:i') }}
-                        </td>
+                                <td>
+                                    {{ $document->deleted_at->format('d M Y H:i') }}
+                                </td>
 
-                        <td>
+                                <td class="text-center">
 
-                            <div class="d-flex gap-2">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                <form
-                                    action="{{ route('document.restore',$document->id) }}"
-                                    method="POST">
+                                        <form
+                                            action="{{ route('document.restore', $document->id) }}"
+                                            method="POST">
 
-                                    @csrf
-                                    @method('PUT')
+                                            @csrf
+                                            @method('PUT')
 
-                                    <button
-                                        class="btn btn-success btn-sm">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-success btn-sm">
 
-                                        Restore
+                                                Restore
 
-                                    </button>
+                                            </button>
 
-                                </form>
+                                        </form>
 
-                                <form
-                                    action="{{ route('document.forceDelete',$document->id) }}"
-                                    method="POST">
+                                        <form
+                                            action="{{ route('document.forceDelete', $document->id) }}"
+                                            method="POST">
 
-                                    @csrf
-                                    @method('DELETE')
+                                            @csrf
+                                            @method('DELETE')
 
-                                    <button
-                                        class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Hapus permanen?')">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Yakin ingin menghapus permanen dokumen ini?')">
 
-                                        Hapus Permanen
+                                                Hapus Permanen
 
-                                    </button>
+                                            </button>
 
-                                </form>
+                                        </form>
 
-                            </div>
+                                    </div>
 
-                        </td>
+                                </td>
 
-                    </tr>
+                            </tr>
 
-                    @empty
+                        @empty
 
-                        <tr>
-                            <td colspan="3" class="text-center text-muted">
-                                Sampah kosong
-                            </td>
-                        </tr>
+                            <tr>
 
-                    @endforelse
+                                <td
+                                    colspan="{{ Auth::user()->role === 'admin' ? 4 : 3 }}"
+                                    class="text-center text-muted py-4">
+
+                                    Sampah kosong
+
+                                </td>
+
+                            </tr>
+
+                        @endforelse
 
                     </tbody>
 
                 </table>
 
             </div>
+
         </div>
 
     </div>
