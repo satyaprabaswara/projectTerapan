@@ -42,12 +42,13 @@ class DocumentController extends Controller
         $query = Document::with(['category', 'user']);
 
         // kontrol akses "seperti gdrive"
+        // Normalisasi visibility agar tidak sensitif kapital/spasi (mis. 'Public', ' public ', dll)
         if (!$isAdmin) {
             $query->where(function ($q) use ($userId) {
-                $q->where('visibility', 'public')
+                $q->whereRaw('LOWER(TRIM(visibility)) = ?', ['public'])
                   ->orWhere('user_id', $userId)
                   ->orWhere(function ($sub) use ($userId) {
-                      $sub->where('visibility', 'shared')
+                      $sub->whereRaw('LOWER(TRIM(visibility)) = ?', ['shared'])
                           ->whereHas('sharedUsers', function ($u) use ($userId) {
                               $u->where('users.id', $userId);
                           });

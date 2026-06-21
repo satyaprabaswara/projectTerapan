@@ -98,6 +98,15 @@
 
                     </div>
 
+                    <!-- Tambahan untuk kebutuhan UI Kelola Akses -->
+                    <div class="mb-3 fs-5" id="documentVisibilityRow">
+
+                        <strong>Visibility:</strong>
+
+                        {{ $document->visibility ?? '-' }}
+
+                    </div>
+
                 </div>
 
             </div>

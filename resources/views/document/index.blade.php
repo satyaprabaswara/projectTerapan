@@ -489,10 +489,10 @@
                                                 </button>
 
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li>
+<li>
 <button
                                                             class="dropdown-item"
-                                                            data-bs-toggle="modal"
+data-bs-toggle="modal"
                                                             data-bs-target="#shareModal"
                                                             data-doc-id="{{ $d->id }}"
                                                             data-doc-name="{{ $d->nama_dokumen }}"
@@ -524,6 +524,7 @@
                                                             <i class="bi bi-info-circle"></i><span>Informasi File</span>
                                                         </a>
                                                     </li>
+                                                    <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         @php
                                                             $role = Auth::user()?->role;
@@ -538,7 +539,10 @@
                                                             @if(!($isAdmin || $isOwner)) style="display:none;" @endif>
                                                             @csrf
                                                             @method('DELETE')
-                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <hr class="dropdown-divider">
+                                                            </li>
+                                                            <li>
                                                             <button
                                                                 type="submit"
                                                                 onclick="return confirm('Yakin hapus dokumen?')"
@@ -572,8 +576,9 @@
                     <h5 class="offcanvas-title fw-bold" id="infoCanvasLabel">ℹ️ Informasi Dokumen</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body">
+<div class="offcanvas-body">
                     <div id="infoCanvasBody" class="text-muted">Pilih dokumen untuk melihat detail.</div>
+                    <div id="manageVisibilityHint" class="text-muted" style="font-size:12px; display:none; margin-top:8px;"></div>
                 </div>
             </div>
 
@@ -661,44 +666,22 @@
 
                 const infoCanvasBody = document.getElementById('infoCanvasBody');
 
+                function extractDocFieldFromHtml(htmlDoc, labelContains) {
+                    let result = null;
+                    htmlDoc.querySelectorAll('strong').forEach(item => {
+                        const label = item.textContent.trim();
+                        if (label.includes(labelContains)) {
+                            result = item.parentElement.textContent.replace(label, '').trim();
+                        }
+                    });
+                    return result;
+                }
+
                 document.querySelectorAll('[data-doc-id]').forEach(button => {
                     button.addEventListener('click', function () {
                         const docId = this.dataset.docId;
-                        const canManageSection = infoCanvasBody.querySelector('#manageSection');
-                        const visibilitySelect = infoCanvasBody.querySelector('#accessVisibilitySelect');
-                        const visibilityInput = infoCanvasBody.querySelector('#visibilityInput');
-                        const saveVisibilityBtn = infoCanvasBody.querySelector('#saveVisibilityBtn');
+                        if (!docId) return;
 
-                        // handler simpan akses (owner/admin saja)
-                        if (saveVisibilityBtn && visibilitySelect && visibilityInput) {
-                                saveVisibilityBtn.onclick = function () {
-                                    const visibilityVal = visibilitySelect.value;
-                                    visibilityInput.value = visibilityVal;
-
-                                    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                                    fetch(`/documents/${docId}/visibility`, {
-                                        method: 'PATCH',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': csrf,
-                                            'Accept': 'application/json',
-                                        },
-                                        body: JSON.stringify({ visibility: visibilityVal })
-                                    })
-                                    .then(async (r) => {
-                                        if (!r.ok) {
-                                            const txt = await r.text().catch(() => '');
-                                            throw new Error(txt || 'Failed to update visibility');
-                                        }
-                                        window.location.reload();
-                                    })
-                                    .catch((e) => {
-                                        alert(e.message || 'Gagal memperbarui visibility');
-                                    });
-                                };
-                        }
-                        if(!docId) return;
-                        
                         infoCanvasBody.innerHTML = 'Memuat informasi dokumen...';
 
                         fetch(`/document/${docId}`)
@@ -706,42 +689,39 @@
                             .then(html => {
                                 const parser = new DOMParser();
                                 const doc = parser.parseFromString(html, 'text/html');
+
                                 const nama = doc.querySelector('h2')?.textContent.trim() ?? '-';
-
-                                let kategori = '-'; let tanggal = '-'; let ukuran = '-'; let pemilik = '-';
-
-                                doc.querySelectorAll('strong').forEach(item => {
-                                    const label = item.textContent.trim();
-                                    const value = item.parentElement.textContent.replace(label,'').trim();
-                                    if(label.includes('Kategori')){ kategori = value; }
-                                    if(label.includes('Tanggal Upload')){ tanggal = value; }
-                                    if(label.includes('Ukuran File')){ ukuran = value; }
-                                    if(label.includes('Pemilik')){ pemilik = value; }
-                                });
+                                const kategori = extractDocFieldFromHtml(doc, 'Kategori') ?? '-';
+                                const tanggal = extractDocFieldFromHtml(doc, 'Tanggal Upload') ?? '-';
+                                const ukuran = extractDocFieldFromHtml(doc, 'Ukuran File') ?? '-';
+                                const pemilik = extractDocFieldFromHtml(doc, 'Pemilik') ?? '-';
+                                const visibilityServer = (extractDocFieldFromHtml(doc, 'Visibility') ?? '').toLowerCase().trim();
 
                                 infoCanvasBody.innerHTML = `
                                     <div class="p-1">
-
                                         <div class="mb-3">
                                             <div style="font-size: 28px; font-weight: 700; color:#0f172a; line-height:1.2; word-break: break-word;">${nama || '-'}</div>
                                             <div class="text-muted">${kategori ? 'Kategori: ' + kategori : 'Kategori: -'}</div>
                                         </div>
+
                                         <div class="bg-light border rounded-4 p-3 mb-4">
                                             <div class="fw-bold mb-1">Ringkasan</div>
                                             <div class="d-flex justify-content-between gap-3 flex-wrap"><div class="text-muted">Pemilik</div><div class="fw-semibold">${pemilik || '-'}</div></div>
                                             <div class="d-flex justify-content-between gap-3 flex-wrap"><div class="text-muted">Tanggal upload</div><div class="fw-semibold">${tanggal || '-'}</div></div>
                                             <div class="d-flex justify-content-between gap-3 flex-wrap"><div class="text-muted">Ukuran</div><div class="fw-semibold">${ukuran || '-'}</div></div>
                                         </div>
+
                                         <hr class="my-4" />
                                         <h6 class="fw-bold mb-3">Yang Memiliki Akses</h6>
                                         <div class="text-muted mb-3" id="accessLoading">Memuat daftar akses...</div>
-<div class="mb-3" id="accessList"></div>
-                                        <div class="mt-3" id="manageSection" style="display:block;">
+                                        <div class="mb-3" id="accessList"></div>
+
+                                        <div class="mt-3" id="offcanvasManageSection" style="display:block;">
                                             <hr class="my-4" />
                                             <h6 class="fw-bold mb-3">Kelola Akses</h6>
 
                                             <div class="mb-3">
-                                                <select id="accessVisibilitySelect" class="form-select">
+                                                <select id="offcanvasVisibilitySelect" class="form-select">
                                                     <option value="private">Private</option>
                                                     <option value="shared">Shared</option>
                                                     <option value="public">Public (Login)</option>
@@ -749,9 +729,11 @@
                                                 <div class="text-muted" style="font-size:13px;">Pemilik/Admin dapat mengubah akses.</div>
                                             </div>
 
+                                            <div class="text-muted" style="font-size:12px;" id="offcanvasSharedAutoNote" class="mt-2"></div>
+
                                             <form id="visibilityForm" method="POST">
                                                 @csrf
-                                                <input type="hidden" name="visibility" id="visibilityInput" />
+                                                <input type="hidden" name="visibility" id="offcanvasVisibilityInput" />
                                             </form>
 
                                             <button type="button" id="saveVisibilityBtn" class="btn btn-primary w-100">
@@ -765,14 +747,59 @@
                                         <div class="d-flex justify-content-between gap-3 mb-2"><div class="text-muted">Ukuran</div><div class="fw-semibold">${ukuran || '-'}</div></div>
                                         <div class="d-flex justify-content-between gap-3 mb-2"><div class="text-muted">Pemilik</div><div class="fw-semibold">${pemilik || '-'}</div></div>
                                         <div class="d-flex justify-content-between gap-3"><div class="text-muted">Terakhir dimodifikasi</div><div class="fw-semibold">${tanggal || '-'}</div></div>
+
                                         <hr class="my-4" />
-                                            <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
-                                            <div id="accessTable" class="d-flex flex-column gap-2"></div>
-                                        </div>
+                                        <div class="fw-bold mb-2">Daftar Akses (Shared Users)</div>
+                                        <div id="accessTable" class="d-flex flex-column gap-2"></div>
                                     </div>
                                 `;
 
+                                const visibilitySelect = infoCanvasBody.querySelector('#offcanvasVisibilitySelect');
+                                const visibilityInput = infoCanvasBody.querySelector('#offcanvasVisibilityInput');
+                                const saveVisibilityBtn = infoCanvasBody.querySelector('#saveVisibilityBtn');
+
+                                if (visibilitySelect) {
+                                    if (visibilityServer && ['private','shared','public'].includes(visibilityServer)) {
+                                        visibilitySelect.value = visibilityServer;
+                                        if (visibilityInput) visibilityInput.value = visibilityServer;
+                                    }
+                                }
+
+                                if (saveVisibilityBtn && visibilitySelect && visibilityInput) {
+                                    saveVisibilityBtn.onclick = function () {
+                                        const visibilityVal = visibilitySelect.value;
+                                        visibilityInput.value = visibilityVal;
+
+                                        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                                        fetch(`/documents/${docId}/visibility`, {
+                                            method: 'PATCH',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': csrf,
+                                                'Accept': 'application/json'
+                                            },
+                                            body: JSON.stringify({ visibility: visibilityVal })
+                                        })
+                                        .then(async (r) => {
+                                            const txt = await r.text().catch(() => '');
+                                            if (!r.ok) {
+                                                console.error('updateVisibility failed', r.status, txt);
+                                                alert('Gagal update visibility (HTTP ' + r.status + '): ' + (txt || ''));
+                                                return;
+                                            }
+                                            alert('Visibility berhasil diubah');
+                                            window.location.reload();
+                                        })
+                                        .catch((e) => {
+                                            console.error('updateVisibility exception', e);
+                                            alert(e?.message || 'Gagal memperbarui visibility');
+                                        });
+                                    };
+                                }
+
                                 const accessListEl = infoCanvasBody.querySelector('#accessList');
+
                                 fetch(`/documents/${docId}/shares/list`)
                                     .then(async (r) => {
                                         if (!r.ok) {
@@ -784,23 +811,26 @@
                                     .then((data) => {
                                         const loading = infoCanvasBody.querySelector('#accessLoading');
                                         if (loading) loading.remove();
+
                                         const users = data && Array.isArray(data.users) ? data.users : [];
                                         const accessTable = infoCanvasBody.querySelector('#accessTable');
 
                                         if (users.length === 0) {
-                                            if(accessListEl) accessListEl.innerHTML = '<div class="text-muted">Belum ada akses.</div>';
+                                            if (accessListEl) accessListEl.innerHTML = '<div class="text-muted">Belum ada akses.</div>';
                                             return;
                                         }
-                                        if(accessListEl) accessListEl.innerHTML = '';
+
+                                        if (accessListEl) accessListEl.innerHTML = '';
 
                                         users.forEach((u) => {
                                             const item = document.createElement('div');
                                             item.className = 'd-flex align-items-center justify-content-between gap-2 border rounded-3 p-2 flex-wrap';
                                             item.innerHTML = `<div><div class="fw-semibold">${u.name || '-'}</div><div class="text-muted" style="font-size: 13px;">${u.email || '-'}</div></div>`;
-                                            if(accessListEl) accessListEl.appendChild(item);
+                                            if (accessListEl) accessListEl.appendChild(item);
                                             if (accessTable) accessTable.appendChild(item.cloneNode(true));
                                         });
-                                    }).catch(() => {
+                                    })
+                                    .catch(() => {
                                         if (accessListEl) accessListEl.innerHTML = '<div class="text-muted">Gagal memuat akses.</div>';
                                     });
                             })
@@ -814,8 +844,8 @@
                 const input = document.getElementById('fileInput');
                 const fileNameEl = document.getElementById('file-name');
 
-                if(input && fileNameEl){
-                    input.addEventListener('change', function(){
+                if (input && fileNameEl) {
+                    input.addEventListener('change', function () {
                         const fileName = this.files.length ? this.files[0].name : 'Belum ada file dipilih';
                         fileNameEl.innerText = fileName;
                         const uploadNameInput = document.querySelector('#uploadModal input[name="nama_dokumen"]');
@@ -824,126 +854,85 @@
                         }
                     });
                 }
-                /* =========================================
 
-   SHARE MODAL
+                /* SHARE MODAL */
+                window.__handleRemoveShareAkses = function(docId, btnEl){
+                    const removeUrl = btnEl.getAttribute('data-remove-url');
+                    if(!removeUrl) return;
+                    if(!confirm('Hapus akses pengguna ini?')) return;
 
-========================================= */
+                    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-// handler hapus akses dari modal
-window.__handleRemoveShareAkses = function(docId, btnEl){
+                    fetch(removeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrf,
+                            'X-HTTP-Method-Override': 'DELETE'
+                        },
+                        body: JSON.stringify({})
+                    }).then(r => {
+                        if(!r.ok) throw new Error('Request failed');
+                        window.location.reload();
+                    }).catch(() => {
+                        alert('Gagal menghapus akses');
+                    });
+                };
 
-    const removeUrl = btnEl.getAttribute('data-remove-url');
+                document.querySelectorAll('[data-bs-target="#shareModal"]').forEach(btn => {
+                    btn.addEventListener('click', function(){
+                        const docId = this.dataset.docId;
+                        window.__shareModalDocId = docId;
+                        document.getElementById('shareForm').action = `/documents/${docId}/share`;
 
-    if(!removeUrl) return;
+                        // set default visibility dropdown based on current server value
+                        fetch(`/document/${docId}`)
+                            .then(r => r.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                const visibilityEl = Array.from(doc.querySelectorAll('strong'))
+                                    .find(s => (s.textContent || '').trim() === 'Visibility');
+                                const visibilityText = visibilityEl ? visibilityEl.parentElement.textContent.replace('Visibility', '').trim() : '';
+                                const visibilityServer = (visibilityText || '').toLowerCase();
+                                const select = document.getElementById('shareVisibilitySelect');
+                                if (select && ['private','shared','public'].includes(visibilityServer)) {
+                                    select.value = visibilityServer;
+                                }
+                            })
+                            .catch(()=>{});
 
-    if(!confirm('Hapus akses pengguna ini?')) return;
+                        fetch(`/documents/${docId}/shares/list`)
+                        .then(r => r.json())
+                        .then(data => {
+                            let html = '';
+                            data.users.forEach(user => {
+                                html += `
+                                <div class="border rounded p-2 mb-2 d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                                    <div>
+                                        <b>${user.name}</b><br>
+                                        <small>${user.email}</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-primary">${user.permission}</span>
+                                        ${user.removeUrl ? `
+                                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                                data-remove-url="${user.removeUrl}"
+                                                onclick="window.__handleRemoveShareAkses && window.__handleRemoveShareAkses('${docId}', this)" >
+                                                Hapus akses
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>`;
+                            });
+                            document.getElementById('shareUserList').innerHTML = html;
+                        });
+                    });
+                });
 
-    // ambil CSRF dari meta (Laravel default)
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-    fetch(removeUrl, {
-
-        method: 'POST',
-
-        headers: {
-
-            'Content-Type': 'application/json',
-
-            'X-CSRF-TOKEN': csrf,
-
-            'X-HTTP-Method-Override': 'DELETE'
-
-        },
-
-        body: JSON.stringify({})
-
-    }).then(r => {
-
-        if(!r.ok) throw new Error('Request failed');
-
-        // reload agar list & removeUrl sinkron
-
-        window.location.reload();
-
-    }).catch(() => {
-
-        alert('Gagal menghapus akses');
-
-    });
-
-};
-
-
-document.querySelectorAll('[data-bs-target="#shareModal"]')
-
-.forEach(btn => {
-
-    btn.addEventListener('click', function(){
-
-        const docId = this.dataset.docId;
-
-        document
-
-            .getElementById('shareForm')
-
-            .action = `/documents/${docId}/share`;
-
-        fetch(`/documents/${docId}/shares/list`)
-
-        .then(r => r.json())
-
-        .then(data => {
-
-            let html = '';
-
-data.users.forEach(user => {
-
-                html += `
-
-                <div class="border rounded p-2 mb-2 d-flex justify-content-between align-items-center gap-3 flex-wrap">
-
-                    <div>
-
-                        <b>${user.name}</b><br>
-
-                        <small>${user.email}</small>
-
-                    </div>
-
-                    <div class="d-flex align-items-center gap-2">
-
-                        <span class="badge bg-primary">
-
-                            ${user.permission}
-
-                        </span>
-
-                        ${user.removeUrl ? `
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                data-remove-url="${user.removeUrl}"
-                                onclick="window.__handleRemoveShareAkses && window.__handleRemoveShareAkses('${docId}', this)" >
-                                Hapus akses
-                            </button>
-                        ` : ''}
-
-                    </div>
-
-                </div>
-
-                `;
-
-            });
-
-            document.getElementById('shareUserList').innerHTML = html;
-
-        });
-
-    });
-
-});
             });
             </script>
+
 
 <div class="modal fade" id="shareModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -995,6 +984,58 @@ data.users.forEach(user => {
                 </button>
 
             </form>
+
+            <script>
+                // intercept submit untuk update visibility dulu (owner/admin only handled by backend)
+                document.addEventListener('DOMContentLoaded', function(){
+                    const shareForm = document.getElementById('shareForm');
+                    if(!shareForm) return;
+
+                    shareForm.addEventListener('submit', function(e){
+                        const docId = window.__shareModalDocId;
+                        const select = document.getElementById('shareVisibilitySelect');
+                        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                        if(!docId || !select) {
+                            return; // fallback: let form submit normally
+                        }
+
+                        e.preventDefault();
+
+                        const visibilityVal = select.value;
+
+                        fetch(`/documents/${docId}/visibility`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrf,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ visibility: visibilityVal })
+                        })
+                        .then(async (r) => {
+                            if(!r.ok) {
+                                const txt = await r.text().catch(()=> '');
+                                throw new Error(txt || 'Failed to update visibility');
+                            }
+
+                            const hidden =
+
+                                document.getElementById('shareVisibilityInput');
+
+                            if(hidden){
+
+                                hidden.value = visibilityVal;
+
+                            }
+                            shareForm.submit();
+                        })
+                        .catch((err) => {
+                            alert('Gagal update visibility: ' + (err?.message || err));
+                        });
+                    });
+                });
+            </script>
 
             <hr>
 
