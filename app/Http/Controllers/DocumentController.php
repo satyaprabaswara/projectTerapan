@@ -255,9 +255,23 @@ class DocumentController extends Controller
 
     public function trash()
     {
-        $documents = Document::onlyTrashed()
-            ->latest()
-            ->get();
+        $user = Auth::user();
+
+        if ($this->currentIsAdmin()) {
+
+            // Admin melihat semua dokumen yang ada di sampah
+            $documents = Document::onlyTrashed()
+                ->latest()
+                ->get();
+
+        } else {
+
+            // Viewer hanya melihat dokumen yang dia hapus sendiri
+            $documents = Document::onlyTrashed()
+                ->where('user_id', $user->id)
+                ->latest()
+                ->get();
+        }
 
         return view(
             'document.trash',
@@ -269,16 +283,35 @@ class DocumentController extends Controller
     {
         $document = Document::onlyTrashed()->findOrFail($id);
 
+        $isOwner =
+            (int) $document->user_id === (int) $this->currentUserId();
+
+        abort_unless(
+            $this->currentIsAdmin() || $isOwner,
+            403
+        );
+
         $document->restore();
 
         return redirect()
             ->route('document.trash')
-            ->with('success', 'Dokumen berhasil direstore');
+            ->with(
+                'success',
+                'Dokumen berhasil direstore'
+            );
     }
 
     public function forceDelete($id)
     {
         $document = Document::onlyTrashed()->findOrFail($id);
+
+        $isOwner =
+            (int) $document->user_id === (int) $this->currentUserId();
+
+        abort_unless(
+            $this->currentIsAdmin() || $isOwner,
+            403
+        );
 
         Storage::disk('public')
             ->delete($document->file);
@@ -287,7 +320,10 @@ class DocumentController extends Controller
 
         return redirect()
             ->route('document.trash')
-            ->with('success', 'Dokumen dihapus permanen');
+            ->with(
+                'success',
+                'Dokumen dihapus permanen'
+            );
     }
 
     // Share akses dokumen (owner/admin)
