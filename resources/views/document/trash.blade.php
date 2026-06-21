@@ -18,36 +18,48 @@
                     <thead>
                         <tr>
                             <th>Nama Dokumen</th>
+
+                            @if(Auth::user()->role === 'admin')
+                                <th>Dihapus Oleh</th>
+                            @endif
+
                             <th>Dihapus Pada</th>
                             <th>Aksi</th>
                         </tr>
-                    </thead>
+                        </thead>
 
                     <tbody>
 
                     @forelse($documents as $document)
 
-                        <tr>
+                      <tr>
 
-                            <td>
-                                {{ $document->nama_dokumen }}
-                            </td>
+                        <td>
+                            {{ $document->nama_dokumen }}
+                        </td>
 
-                            <td>
-                                {{ $document->deleted_at->format('d M Y H:i') }}
-                            </td>
+                        @if(Auth::user()->role === 'admin')
+                        <td>
+                            {{ $document->user->name ?? '-' }}
+                        </td>
+                        @endif
 
-                            <td class="d-flex gap-2">
+                        <td>
+                            {{ $document->deleted_at->format('d M Y H:i') }}
+                        </td>
 
-                                <!-- Restore -->
+                        <td>
+
+                            <div class="d-flex gap-2">
+
                                 <form
-                                    action="{{ route('document.restore', $document->id) }}"
+                                    action="{{ route('document.restore',$document->id) }}"
                                     method="POST">
 
                                     @csrf
+                                    @method('PUT')
 
                                     <button
-                                        type="submit"
                                         class="btn btn-success btn-sm">
 
                                         Restore
@@ -56,18 +68,16 @@
 
                                 </form>
 
-                                <!-- Hapus Permanen -->
                                 <form
-                                    action="{{ route('document.forceDelete', $document->id) }}"
+                                    action="{{ route('document.forceDelete',$document->id) }}"
                                     method="POST">
 
                                     @csrf
                                     @method('DELETE')
 
                                     <button
-                                        type="submit"
                                         class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Hapus permanen dokumen ini?')">
+                                        onclick="return confirm('Hapus permanen?')">
 
                                         Hapus Permanen
 
@@ -75,9 +85,11 @@
 
                                 </form>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </td>
+
+                    </tr>
 
                     @empty
 

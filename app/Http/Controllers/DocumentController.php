@@ -253,21 +253,21 @@ class DocumentController extends Controller
     }
 
 
-    public function trash()
+   public function trash()
     {
         $user = Auth::user();
 
         if ($this->currentIsAdmin()) {
 
-            // Admin melihat semua dokumen yang ada di sampah
             $documents = Document::onlyTrashed()
+                ->with('user')
                 ->latest()
                 ->get();
 
         } else {
 
-            // Viewer hanya melihat dokumen yang dia hapus sendiri
             $documents = Document::onlyTrashed()
+                ->with('user')
                 ->where('user_id', $user->id)
                 ->latest()
                 ->get();
